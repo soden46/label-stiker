@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreLabelPrintRequest;
+use App\Models\LabelPrint;
+use App\Models\Product;
+use App\Services\BarcodeService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+
+class LabelPrintController extends Controller
+{
+    public function index(Request $request): View
+    {
+        $search = $request->string('search')->trim()->toString();
+        $status = $request->string('status')->toString();
+
+        $labels = LabelPrint::query()
+            ->with(['product', 'creator'])
+            ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('purchase_order_no', 'like', "%{$search}%")
+                    ->orWhere('customer_part_no', 'like', "%{$search}%")
+                    ->orWhereHas('product', fn ($product) => $product
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%"));
+            }))
+            ->when($status === 'printed', fn ($query) => $query->whereNotNull('printed_at'))
+            ->when($status === 'ready', fn ($query) => $query->whereNull('printed_at'))
+            ->latest()
+            ->paginate(25)
+            ->withQueryString();
+
+        return view('labels.index', compact('labels', 'search', 'status'));
+    }
+
+    public function create(): View
+    {
+        return view('labels.create', [
+            'products' => Product::where('is_active', true)->orderBy('name')->get(),
+        ]);
+    }
+
+    public function store(StoreLabelPrintRequest $request): RedirectResponse
+    {
+        $product = Product::findOrFail($request->integer('product_id'));
+        $labelPrint = LabelPrint::create([
+            ...$request->validated(),
+            'uuid' => (string) Str::uuid(),
+            'created_by' => $request->user()->id,
+            'barcode_value' => $product->barcode_value,
+            'product_snapshot' => $product->only([
+                'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom',
+            ]),
+        ]);
+
+        return redirect()->route('labels.show', $labelPrint)->with('success', 'Label berhasil dibuat dan siap dicetak.');
+    }
+
+    public function show(LabelPrint $labelPrint, BarcodeService $barcode): View
+    {
+        return view('labels.show', $this->viewData($labelPrint, $barcode));
+    }
+
+    public function pdf(LabelPrint $labelPrint, BarcodeService $barcode)
+    {
+        $labelPrint->update(['printed_at' => now()]);
+
+        return Pdf::loadView('labels.pdf', [
+            'pages' => $this->printPages(collect([$labelPrint->fresh()]), [], $barcode),
+        ])
+            ->setPaper([0, 0, 283.465, 283.465])
+            ->download('label-'.$labelPrint->purchase_order_no.'.pdf');
+    }
+
+    public function bulkPdf(Request $request, BarcodeService $barcode)
+    {
+        $validated = $request->validate([
+            'label_ids' => ['required', 'array', 'min:1', 'max:100'],
+            'label_ids.*' => ['integer', 'distinct', 'exists:label_prints,id'],
+            'copies' => ['nullable', 'array'],
+            'copies.*' => ['nullable', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $ids = collect($validated['label_ids'])->map(fn ($id) => (int) $id)->values();
+        $copies = collect($validated['copies'] ?? []);
+        $totalPages = $ids->sum(fn ($id) => (int) ($copies->get($id, 1)));
+
+        if ($totalPages > 300) {
+            return back()->withErrors(['label_ids' => 'Maksimal 300 halaman dalam satu file PDF.'])->withInput();
+        }
+
+        $labelsById = LabelPrint::with('product')->whereIn('id', $ids)->get()->keyBy('id');
+        $labels = $ids->map(fn ($id) => $labelsById->get($id))->filter();
+
+        LabelPrint::whereIn('id', $ids)->update(['printed_at' => now()]);
+
+        return Pdf::loadView('labels.pdf', [
+            'pages' => $this->printPages($labels, $copies, $barcode),
+        ])
+            ->setPaper([0, 0, 283.465, 283.465])
+            ->download('label-bulk-'.now()->format('Ymd-His').'.pdf');
+    }
+
+    private function viewData(LabelPrint $labelPrint, BarcodeService $barcode): array
+    {
+        $labelPrint->loadMissing('product');
+
+        return [
+            'label' => $labelPrint,
+            'partBarcode' => $barcode->html($labelPrint->barcode_value),
+            'customerBarcode' => $barcode->html($labelPrint->customer_part_no),
+        ];
+    }
+
+    private function printPages(Collection $labels, Collection|array $copies, BarcodeService $barcode): array
+    {
+        $copies = collect($copies);
+        $pages = [];
+
+        foreach ($labels as $label) {
+            $data = $this->viewData($label, $barcode);
+
+            foreach (range(1, (int) $copies->get($label->id, 1)) as $copy) {
+                $pages[] = $data;
+            }
+        }
+
+        return $pages;
+    }
+}
