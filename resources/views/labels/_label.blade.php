@@ -3,7 +3,13 @@
         <table class="sticker-header" role="presentation">
             <colgroup><col style="width:25%"><col style="width:75%"></colgroup>
             <tr>
-                <td class="sticker-logo"><strong>WAF</strong><small>SPARE PARTS</small></td>
+                <td class="sticker-logo {{ ($logoDataUri ?? null) ? 'has-image' : '' }}">
+                    @if($logoDataUri ?? null)
+                        <img class="sticker-logo-image" src="{{ $logoDataUri }}" alt="Logo label">
+                    @else
+                        <strong>WAF</strong><small>SPARE PARTS</small>
+                    @endif
+                </td>
                 <td class="sticker-product">
                     <strong class="{{ mb_strlen($label->product_snapshot['name']) > 16 ? 'is-long' : '' }}">{{ $label->product_snapshot['name'] }}</strong>
                     <small>{{ $label->product_snapshot['description'] ?: '—' }}</small>

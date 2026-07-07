@@ -21,21 +21,43 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors(['email' => 'Email atau password belum cocok.'])->onlyInput('email');
+        if (! Auth::attempt([...$credentials, 'portal' => 'backoffice', 'is_active' => true], $request->boolean('remember'))) {
+            return back()->withErrors(['email' => 'Akun Back Office atau password belum cocok.'])->onlyInput('email');
         }
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->route('dashboard');
+    }
+
+    public function createPos(): View
+    {
+        return view('auth.pos-login');
+    }
+
+    public function storePos(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        if (! Auth::attempt([...$credentials, 'portal' => 'pos', 'is_active' => true], $request->boolean('remember'))) {
+            return back()->withErrors(['email' => 'Akun POS atau password belum cocok.'])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->route('pos.index');
     }
 
     public function destroy(Request $request): RedirectResponse
     {
+        $portal = $request->user()?->portal;
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route($portal === 'pos' ? 'pos.login' : 'login');
     }
 }

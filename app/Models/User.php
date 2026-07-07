@@ -5,14 +5,16 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +26,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'role_id',
+        'portal',
+        'is_active',
     ];
 
     /**
@@ -46,11 +51,31 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
     public function labelPrints(): HasMany
     {
         return $this->hasMany(LabelPrint::class, 'created_by');
+    }
+
+    public function accessRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'admin' || $this->role === 'super_admin' || (bool) $this->accessRole?->is_super_admin;
+    }
+
+    public function canAccess(string $permission): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->accessRole?->permissions()->where('slug', $permission)->exists() ?? false;
     }
 }

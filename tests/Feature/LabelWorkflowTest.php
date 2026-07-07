@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\LabelPrint;
+use App\Models\Permission;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -25,6 +27,19 @@ class LabelWorkflowTest extends TestCase
             ->assertRedirect('/dashboard');
 
         $this->get('/dashboard')->assertOk()->assertSee('Dashboard label');
+    }
+
+    public function test_pos_url_returns_user_to_pos_after_login(): void
+    {
+        $permission = Permission::create(['name' => 'Akses POS', 'slug' => 'pos.access', 'module' => 'POS', 'portal' => 'pos']);
+        $role = Role::create(['name' => 'Kasir', 'slug' => 'kasir', 'portal' => 'pos']);
+        $role->permissions()->attach($permission);
+        $user = User::factory()->create(['password' => 'password', 'role' => 'cashier', 'role_id' => $role->id, 'portal' => 'pos']);
+
+        $this->get('/pos')->assertRedirect('/pos/login');
+        $this->post('/pos/login', ['email' => $user->email, 'password' => 'password'])
+            ->assertRedirect('/pos');
+        $this->get('/pos')->assertOk()->assertSee('Terminal penjualan');
     }
 
     public function test_admin_can_generate_and_download_a_label(): void

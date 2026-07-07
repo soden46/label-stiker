@@ -12,7 +12,7 @@ class LabelPrint extends Model
 
     protected $fillable = [
         'uuid', 'product_id', 'created_by', 'purchase_order_no',
-        'customer_part_no', 'quantity', 'uom', 'barcode_value',
+        'customer_part_no', 'quantity', 'uom', 'barcode_value', 'logo_path',
         'product_snapshot', 'printed_at',
     ];
 
@@ -31,7 +31,7 @@ class LabelPrint extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function creator(): BelongsTo

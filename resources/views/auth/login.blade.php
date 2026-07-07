@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Masuk · Labelin</title>
+    <title>Masuk · {{ $brandName }}</title>
+    <link rel="icon" href="{{ $brandFaviconDataUri ?: asset('favicon.ico') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="login-page">
     <main class="login-shell">
         <section class="login-story">
-            <a class="brand brand-light" href="#"><span class="brand-mark">L</span><span><strong>labelin</strong><small>Barcode workspace</small></span></a>
+            <a class="brand brand-light" href="#"><span class="brand-mark {{ $brandLogoDataUri ? 'has-image' : '' }}">@if($brandLogoDataUri)<img src="{{ $brandLogoDataUri }}" alt="{{ $brandName }}">@else{{ strtoupper(mb_substr($brandName, 0, 1)) }}@endif</span><span><strong>{{ $brandName }}</strong><small>Barcode workspace</small></span></a>
             <div>
                 <p class="eyebrow">SMALL BUSINESS, SERIOUS SYSTEM</p>
                 <h1>Label rapi.<br>Kerja lebih sat-set.</h1>
@@ -32,6 +33,7 @@
                 <input type="password" name="password" value="password" required>
                 <label class="check-row"><input type="checkbox" name="remember"> Ingat saya di perangkat ini</label>
                 <button class="button button-primary button-wide">Masuk ke dashboard <span>→</span></button>
+                <a class="auth-help-link" href="{{ route('password.request') }}">Lupa password?</a>
                 <p class="demo-hint">Demo: admin@labelin.test / password</p>
             </form>
         </section>

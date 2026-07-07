@@ -108,3 +108,65 @@ if (bulkPrint) {
     });
     updateBulkState();
 }
+
+document.querySelectorAll('.file-picker input[type="file"]').forEach(input => {
+    input.addEventListener('change', () => {
+        const label = input.closest('.file-picker');
+        const text = label?.querySelector('span');
+        if (text && input.files?.[0]) text.textContent = input.files[0].name;
+    });
+});
+
+const logoInput = document.querySelector('[data-logo-input]');
+logoInput?.addEventListener('change', () => {
+    const file = logoInput.files?.[0];
+    const preview = document.querySelector('[data-logo-preview]');
+    if (!file || !preview) return;
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+        preview.innerHTML = `<img src="${reader.result}" alt="Preview logo baru">`;
+        const brandMark = document.querySelector('[data-brand-mark]');
+        if (brandMark) {
+            brandMark.classList.add('has-image');
+            brandMark.innerHTML = `<img src="${reader.result}" alt="Preview logo baru">`;
+        }
+    });
+    reader.readAsDataURL(file);
+});
+
+const faviconInput = document.querySelector('[data-favicon-input]');
+faviconInput?.addEventListener('change', () => {
+    const file = faviconInput.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+        document.querySelectorAll('[data-favicon-preview], [data-favicon-mini]').forEach(preview => {
+            preview.innerHTML = `<img src="${reader.result}" alt="Preview favicon baru">`;
+        });
+    });
+    reader.readAsDataURL(file);
+});
+
+const appNameInput = document.querySelector('input[name="app_name"]');
+appNameInput?.addEventListener('input', () => {
+    const name = appNameInput.value.trim() || 'Labelin';
+    document.querySelectorAll('[data-brand-name], [data-tab-title]').forEach(element => element.textContent = name);
+});
+
+const rolePortal = document.querySelector('#rolePortal');
+if (rolePortal) {
+    const updatePermissionPortal = () => {
+        document.querySelectorAll('[data-permission-portal]').forEach(section => {
+            section.hidden = section.dataset.permissionPortal !== rolePortal.value;
+        });
+    };
+    rolePortal.addEventListener('change', updatePermissionPortal);
+    document.querySelector('[data-check-all]')?.addEventListener('click', () => {
+        const active = document.querySelector(`[data-permission-portal="${rolePortal.value}"]`);
+        const checkboxes = [...active.querySelectorAll('input[type="checkbox"]')];
+        const shouldCheck = checkboxes.some(input => !input.checked);
+        checkboxes.forEach(input => input.checked = shouldCheck);
+    });
+    updatePermissionPortal();
+}

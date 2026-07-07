@@ -19,6 +19,7 @@ class StoreLabelPrintRequest extends FormRequest
             'customer_part_no' => ['required', 'string', 'max:100'],
             'quantity' => ['required', 'integer', 'min:1', 'max:99999999'],
             'uom' => ['required', 'string', 'max:20'],
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:1024', 'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000'],
         ];
     }
 
@@ -30,6 +31,7 @@ class StoreLabelPrintRequest extends FormRequest
             'customer_part_no' => 'customer part number',
             'quantity' => 'jumlah',
             'uom' => 'satuan',
+            'logo' => 'logo label',
         ];
     }
 }

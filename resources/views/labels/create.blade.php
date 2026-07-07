@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}">
-    <form method="POST" action="{{ route('labels.store') }}" class="builder-form">
+    <form method="POST" action="{{ route('labels.store') }}" enctype="multipart/form-data" class="builder-form">
         @csrf
         <div class="builder-intro">
             <span class="live-dot"></span>
@@ -41,6 +41,7 @@
                 <div class="field"><label for="quantity">Qty <b>*</b></label><input type="number" min="1" id="quantity" name="quantity" value="{{ old('quantity') }}" placeholder="100" required></div>
                 <div class="field"><label for="uom">Satuan <b>*</b></label><input id="uom" name="uom" value="{{ old('uom', 'PCS') }}" placeholder="PCS" required></div>
             </div>
+            <div class="label-logo-upload"><div><label>Logo khusus label <span>opsional</span></label><p>Kosongkan untuk memakai logo part; jika part tidak punya logo, sistem memakai logo global.</p></div><label class="compact-file-picker"><input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp"><span>＋ Pilih gambar</span><small>PNG 600×450 px · maks. 1 MB</small></label></div>
         </section>
 
         <div class="builder-actions">

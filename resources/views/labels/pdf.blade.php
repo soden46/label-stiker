@@ -14,6 +14,8 @@
         .sticker-logo { width: 25%; color: #fff; background: #050505; border: .45mm solid #fff; text-align: center; vertical-align: middle; }
         .sticker-logo strong { display: block; font-size: 15pt; line-height: 1; }
         .sticker-logo small { display: block; margin-top: 1.2mm; padding-top: .6mm; font-size: 3.5pt; border-top: .2mm solid #fff; }
+        .sticker-logo.has-image { padding: 1mm; background: #fff; border-color: #fff; }
+        .sticker-logo-image { display: block; max-width: 18mm; max-height: 14mm; margin: 0 auto; }
         .sticker-product { width: 75%; padding: 1.5mm 2mm; background: #fff; border-left: 2mm solid #ffc400; text-align: center; vertical-align: middle; overflow: hidden; }
         .sticker-product strong { display: block; max-width: 100%; overflow: hidden; font-size: 13pt; line-height: 1.05; font-weight: bold; white-space: nowrap; }
         .sticker-product strong.is-long { font-size: 10.5pt; }
@@ -42,7 +44,7 @@
 </head>
 <body>
 @foreach($pages as $page)
-    @php([$label, $partBarcode, $customerBarcode] = [$page['label'], $page['partBarcode'], $page['customerBarcode']])
+    @php([$label, $partBarcode, $customerBarcode, $logoDataUri] = [$page['label'], $page['partBarcode'], $page['customerBarcode'], $page['logoDataUri']])
     @php($isPdfLast = $loop->last)
     @include('labels._label')
 @endforeach
