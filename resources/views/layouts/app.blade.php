@@ -17,25 +17,25 @@
         </a>
         <nav class="nav-list" aria-label="Navigasi utama">
             <p class="nav-label">Workspace</p>
-            @if(auth()->user()->canAccess('dashboard.view'))<a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="nav-icon">DB</span> Dashboard</a>@endif
-            @if(auth()->user()->canAccess('inventory.stock_in'))<a href="{{ route('stock.in.create') }}" class="nav-item {{ request()->routeIs('stock.in.*') ? 'active' : '' }}"><span class="nav-icon">IN</span> Stock masuk</a>@endif
-            @if(auth()->user()->canAccess('inventory.stock_out'))<a href="{{ route('stock.out.create') }}" class="nav-item {{ request()->routeIs('stock.out.*') ? 'active' : '' }}"><span class="nav-icon">OUT</span> Stock keluar</a>@endif
-            @if(auth()->user()->canAccess('labels.create'))<a href="{{ route('labels.create') }}" class="nav-item {{ request()->routeIs('labels.create', 'labels.show') ? 'active' : '' }}"><span class="nav-icon">LB</span> Label barcode</a>@endif
-            @if(auth()->user()->canAccess('labels.view'))<a href="{{ route('labels.index') }}" class="nav-item {{ request()->routeIs('labels.index') ? 'active' : '' }}"><span class="nav-icon">PRT</span> Bulk print</a>@endif
-            @if(auth()->user()->canAccess('products.view'))<a href="{{ route('products.index') }}" class="nav-item {{ request()->routeIs('products.*') ? 'active' : '' }}"><span class="nav-icon">MST</span> Master part</a>@endif
-            @if(auth()->user()->canAccess('branding.manage'))<a href="{{ route('settings.edit') }}" class="nav-item {{ request()->routeIs('settings.*') ? 'active' : '' }}"><span class="nav-icon">SET</span> Pengaturan</a>@endif
+            @if(auth()->user()->canAccess('dashboard.view'))<a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><span class="nav-icon">&#8962;</span> Dashboard</a>@endif
+            @if(auth()->user()->canAccess('inventory.stock_in'))<a href="{{ route('stock.in.create') }}" class="nav-item {{ request()->routeIs('stock.in.*') ? 'active' : '' }}"><span class="nav-icon">&#8595;</span> Stock masuk</a>@endif
+            @if(auth()->user()->canAccess('inventory.stock_out'))<a href="{{ route('stock.out.create') }}" class="nav-item {{ request()->routeIs('stock.out.*') ? 'active' : '' }}"><span class="nav-icon">&#8593;</span> Stock keluar</a>@endif
+            @if(auth()->user()->canAccess('labels.create'))<a href="{{ route('labels.create') }}" class="nav-item {{ request()->routeIs('labels.create', 'labels.show') ? 'active' : '' }}"><span class="nav-icon">&#9635;</span> Label barcode</a>@endif
+            @if(auth()->user()->canAccess('labels.view'))<a href="{{ route('labels.index') }}" class="nav-item {{ request()->routeIs('labels.index') ? 'active' : '' }}"><span class="nav-icon">&#9638;</span> Bulk print</a>@endif
+            @if(auth()->user()->canAccess('products.view'))<a href="{{ route('products.index') }}" class="nav-item {{ request()->routeIs('products.*') ? 'active' : '' }}"><span class="nav-icon">&#9671;</span> Master part</a>@endif
+            @if(auth()->user()->canAccess('branding.manage'))<a href="{{ route('settings.edit') }}" class="nav-item {{ request()->routeIs('settings.*') ? 'active' : '' }}"><span class="nav-icon">&#9881;</span> Pengaturan</a>@endif
 
             @if(auth()->user()->isSuperAdmin())
                 <p class="nav-label nav-label-spaced">Administrasi</p>
-                <a href="{{ route('users.index') }}" class="nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}"><span class="nav-icon">USR</span> Pengguna</a>
-                <a href="{{ route('roles.index') }}" class="nav-item {{ request()->routeIs('roles.*') ? 'active' : '' }}"><span class="nav-icon">RLE</span> Role & akses</a>
+                <a href="{{ route('users.index') }}" class="nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}"><span class="nav-icon">&#9679;</span> Pengguna</a>
+                <a href="{{ route('roles.index') }}" class="nav-item {{ request()->routeIs('roles.*') ? 'active' : '' }}"><span class="nav-icon">&#9678;</span> Role & akses</a>
             @endif
 
             @if(auth()->user()->canAccess('purchasing.view') || auth()->user()->canAccess('inventory.view') || auth()->user()->canAccess('manufacturing.view'))
                 <p class="nav-label nav-label-spaced">ERP Modules</p>
-                @if(auth()->user()->canAccess('purchasing.view'))<span class="nav-item nav-disabled"><span class="nav-icon">PO</span> Purchase order <em>soon</em></span>@endif
-                @if(auth()->user()->canAccess('inventory.view'))<span class="nav-item nav-disabled"><span class="nav-icon">STK</span> Stok gudang <em>soon</em></span>@endif
-                @if(auth()->user()->canAccess('manufacturing.view'))<span class="nav-item nav-disabled"><span class="nav-icon">MRP</span> Produksi / MRP <em>soon</em></span>@endif
+                @if(auth()->user()->canAccess('purchasing.view'))<span class="nav-item nav-disabled"><span class="nav-icon">&#9636;</span> Purchase order <em>soon</em></span>@endif
+                @if(auth()->user()->canAccess('inventory.view'))<span class="nav-item nav-disabled"><span class="nav-icon">&#9637;</span> Stok gudang <em>soon</em></span>@endif
+                @if(auth()->user()->canAccess('manufacturing.view'))<span class="nav-item nav-disabled"><span class="nav-icon">&#9670;</span> Produksi / MRP <em>soon</em></span>@endif
             @endif
         </nav>
         <div class="sidebar-profile">
