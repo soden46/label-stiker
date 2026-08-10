@@ -42,6 +42,18 @@ class LabelWorkflowTest extends TestCase
         $this->get('/pos')->assertOk()->assertSee('Terminal penjualan');
     }
 
+    public function test_create_label_preview_includes_standard_certification_text(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get(route('labels.create'))
+            ->assertOk()
+            ->assertSee('STANDARD')
+            ->assertSee('MANUFACTURED TO WAF')
+            ->assertSee('REGISTERED TRADEMARK')
+            ->assertSee('ISO 9001:2015 CERTIFIED');
+    }
+
     public function test_admin_can_generate_and_download_a_label(): void
     {
         $user = User::factory()->create();
