@@ -8,9 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsurePermission
 {
-    public function handle(Request $request, Closure $next, string $permission): Response
+    public function handle(Request $request, Closure $next, string ...$permissions): Response
     {
-        abort_unless($request->user()?->canAccess($permission), 403, 'Anda tidak memiliki izin untuk halaman ini.');
+        $user = $request->user();
+        $allowed = collect($permissions)->contains(fn (string $permission) => $user?->canAccess($permission));
+
+        abort_unless($allowed, 403, 'Anda tidak memiliki izin untuk halaman ini.');
 
         return $next($request);
     }

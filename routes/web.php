@@ -10,10 +10,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/dashboard');
+Route::get('/', fn () => auth()->check() ? redirect(auth()->user()->homePath()) : redirect()->route('login'));
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -43,8 +44,12 @@ Route::middleware(['auth', 'portal:backoffice'])->group(function () {
     Route::get('/labels/create', [LabelPrintController::class, 'create'])->middleware('permission:labels.create')->name('labels.create');
     Route::post('/labels', [LabelPrintController::class, 'store'])->middleware('permission:labels.create')->name('labels.store');
     Route::post('/labels/bulk-pdf', [LabelPrintController::class, 'bulkPdf'])->middleware('permission:labels.print')->name('labels.bulk-pdf');
-    Route::get('/labels/{labelPrint}', [LabelPrintController::class, 'show'])->middleware('permission:labels.view')->name('labels.show');
+    Route::get('/labels/{labelPrint}', [LabelPrintController::class, 'show'])->middleware('permission:labels.view,labels.create')->name('labels.show');
     Route::get('/labels/{labelPrint}/pdf', [LabelPrintController::class, 'pdf'])->middleware('permission:labels.print')->name('labels.pdf');
+    Route::get('/stock-masuk', [StockController::class, 'createIn'])->middleware('permission:inventory.stock_in')->name('stock.in.create');
+    Route::post('/stock-masuk', [StockController::class, 'storeIn'])->middleware('permission:inventory.stock_in')->name('stock.in.store');
+    Route::get('/stock-keluar', [StockController::class, 'createOut'])->middleware('permission:inventory.stock_out')->name('stock.out.create');
+    Route::post('/stock-keluar', [StockController::class, 'storeOut'])->middleware('permission:inventory.stock_out')->name('stock.out.store');
     Route::get('/products', [ProductController::class, 'index'])->middleware('permission:products.view')->name('products.index');
     Route::post('/products', [ProductController::class, 'store'])->middleware('permission:products.manage')->name('products.store');
     Route::post('/products/import', [ProductController::class, 'import'])->middleware('permission:products.import')->name('products.import');

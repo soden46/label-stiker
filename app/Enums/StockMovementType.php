@@ -5,6 +5,8 @@ namespace App\Enums;
 enum StockMovementType: string
 {
     case OpeningBalance = 'opening_balance';
+    case StockIn = 'stock_in';
+    case StockOut = 'stock_out';
     case PurchaseReceipt = 'purchase_receipt';
     case PurchaseReturn = 'purchase_return';
     case ProductionIssue = 'production_issue';

@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        return redirect()->intended($request->user()->homePath());
     }
 
     public function createPos(): View
@@ -48,7 +48,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('pos.index');
+        return redirect()->intended('/pos');
     }
 
     public function destroy(Request $request): RedirectResponse

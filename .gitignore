@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/sigerlm-dataset
+/docs/standards-proposal.md
+/docs/standards-final-proposal.md
+/docs/laravel-skills-roadmap.md

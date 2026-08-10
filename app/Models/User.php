@@ -78,4 +78,27 @@ class User extends Authenticatable
 
         return $this->accessRole?->permissions()->where('slug', $permission)->exists() ?? false;
     }
+
+    public function homePath(): string
+    {
+        if ($this->portal === 'pos') {
+            return '/pos';
+        }
+
+        foreach ([
+            'dashboard.view' => '/dashboard',
+            'inventory.stock_in' => '/stock-masuk',
+            'inventory.stock_out' => '/stock-keluar',
+            'labels.create' => '/labels/create',
+            'labels.view' => '/labels',
+            'products.view' => '/products',
+            'branding.manage' => '/settings',
+        ] as $permission => $path) {
+            if ($this->canAccess($permission)) {
+                return $path;
+            }
+        }
+
+        return '/profile';
+    }
 }

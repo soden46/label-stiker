@@ -23,6 +23,8 @@ class RbacSeeder extends Seeder
             ['branding.manage', 'Kelola Branding', 'Pengaturan', 'backoffice'],
             ['inventory.view', 'Lihat Inventory', 'Inventory', 'backoffice'],
             ['inventory.manage', 'Kelola Inventory', 'Inventory', 'backoffice'],
+            ['inventory.stock_in', 'Input Stock Masuk', 'Inventory', 'backoffice'],
+            ['inventory.stock_out', 'Input Stock Keluar', 'Inventory', 'backoffice'],
             ['purchasing.view', 'Lihat Purchasing', 'Purchasing', 'backoffice'],
             ['purchasing.manage', 'Kelola Purchasing', 'Purchasing', 'backoffice'],
             ['manufacturing.view', 'Lihat Produksi/MRP', 'Manufacturing', 'backoffice'],
@@ -77,7 +79,7 @@ class RbacSeeder extends Seeder
         ])->pluck('id'));
         $cashier->permissions()->sync($permissions->only(['pos.access', 'sales.create'])->pluck('id'));
         $inventory->permissions()->sync($permissions->only([
-            'dashboard.view', 'products.view', 'inventory.view', 'inventory.manage',
+            'inventory.stock_in', 'inventory.stock_out', 'labels.create', 'labels.print',
         ])->pluck('id'));
         $purchasing->permissions()->sync($permissions->only([
             'dashboard.view', 'products.view', 'inventory.view', 'purchasing.view', 'purchasing.manage',

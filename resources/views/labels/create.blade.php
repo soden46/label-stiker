@@ -45,7 +45,7 @@
         </section>
 
         <div class="builder-actions">
-            <a href="{{ route('dashboard') }}" class="button button-ghost">Batal</a>
+            <a href="{{ url(auth()->user()->homePath()) }}" class="button button-ghost">Batal</a>
             <button class="button button-primary" id="generateButton" disabled><span>▣</span> Generate label <span>→</span></button>
         </div>
         <p class="secure-note">ⓘ Data label disimpan sebagai riwayat dan dapat dicetak ulang kapan saja.</p>

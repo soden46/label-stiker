@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo(fn ($request) => $request->is('pos', 'pos/*') ? '/pos/login' : '/login');
-        $middleware->redirectUsersTo(fn ($request) => $request->user()?->portal === 'pos' ? '/pos' : '/dashboard');
+        $middleware->redirectUsersTo(fn ($request) => $request->user()?->homePath() ?? '/dashboard');
         $middleware->alias([
             'portal' => EnsureUserPortal::class,
             'super_admin' => EnsureSuperAdmin::class,
