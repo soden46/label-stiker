@@ -26,7 +26,10 @@ class LabelPrintController extends Controller
             ->with(['product', 'creator'])
             ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('purchase_order_no', 'like', "%{$search}%")
+                    ->orWhere('delivery_note_no', 'like', "%{$search}%")
                     ->orWhere('customer_part_no', 'like', "%{$search}%")
+                    ->orWhere('sender_address', 'like', "%{$search}%")
+                    ->orWhere('recipient_address', 'like', "%{$search}%")
                     ->orWhereHas('product', fn ($product) => $product
                         ->where('name', 'like', "%{$search}%")
                         ->orWhere('sku', 'like', "%{$search}%"));
@@ -42,8 +45,26 @@ class LabelPrintController extends Controller
 
     public function create(): View
     {
+        $products = Product::query()
+            ->select(['id', 'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom'])
+            ->where('is_active', true)
+            ->withSum('stockBalances as inventory_stock', 'quantity')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'sku' => $product->sku,
+                'name' => $product->name,
+                'description' => $product->description,
+                'customer_part_no' => $product->customer_part_no,
+                'supplier_code' => $product->supplier_code,
+                'barcode_value' => $product->barcode_value,
+                'uom' => $product->uom,
+                'inventory_stock' => (float) ($product->inventory_stock ?? 0),
+            ]);
+
         return view('labels.create', [
-            'products' => Product::where('is_active', true)->orderBy('name')->get(),
+            'products' => $products,
         ]);
     }
 
@@ -64,6 +85,7 @@ class LabelPrintController extends Controller
             'uuid' => $uuid,
             'created_by' => $request->user()->id,
             'barcode_value' => $product->barcode_value,
+            'inventory_stock' => $product->stockBalances()->sum('quantity'),
             'logo_path' => $logoPath,
             'product_snapshot' => $product->only([
                 'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom',

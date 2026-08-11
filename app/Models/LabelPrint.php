@@ -12,13 +12,15 @@ class LabelPrint extends Model
 
     protected $fillable = [
         'uuid', 'product_id', 'created_by', 'purchase_order_no',
-        'customer_part_no', 'quantity', 'uom', 'barcode_value', 'logo_path',
-        'product_snapshot', 'printed_at',
+        'delivery_note_no', 'customer_part_no', 'quantity', 'inventory_stock',
+        'uom', 'sender_address', 'recipient_address', 'barcode_value',
+        'logo_path', 'product_snapshot', 'printed_at',
     ];
 
     protected function casts(): array
     {
         return [
+            'inventory_stock' => 'decimal:4',
             'product_snapshot' => 'array',
             'printed_at' => 'datetime',
         ];

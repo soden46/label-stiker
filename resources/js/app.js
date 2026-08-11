@@ -17,31 +17,42 @@ if (builder) {
     const preview = document.querySelector('#previewContent');
 
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
+    const formatQuantity = value => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 4 }).format(Number(value || 0));
+    const emptyText = '-';
+    const currentUom = () => document.querySelector('#uom').value || 'PCS';
+    const updatePreviewQty = () => {
+        document.querySelector('#previewQty').textContent = `${document.querySelector('#quantity').value || emptyText} ${currentUom()}`;
+    };
+
     const renderResults = query => {
         const normalized = query.trim().toLowerCase();
         const matches = products.filter(product => [product.name, product.sku, product.customer_part_no, product.supplier_code].some(value => String(value || '').toLowerCase().includes(normalized))).slice(0, 8);
-        results.innerHTML = matches.length ? matches.map(product => `<button type="button" class="product-result" data-id="${product.id}"><span><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.sku)} · ${escapeHtml(product.description || 'Tanpa deskripsi')}</small></span><em>${escapeHtml(product.supplier_code || product.uom)}</em></button>`).join('') : '<div class="empty-state">Part tidak ditemukan.</div>';
+        results.innerHTML = matches.length ? matches.map(product => `<button type="button" class="product-result" data-id="${product.id}"><span><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.sku)} · ${escapeHtml(product.description || 'Tanpa deskripsi')} · Stok ${formatQuantity(product.inventory_stock)} ${escapeHtml(product.uom || 'PCS')}</small></span><em>${escapeHtml(product.supplier_code || product.uom)}</em></button>`).join('') : '<div class="empty-state">Part tidak ditemukan.</div>';
         results.classList.add('open');
     };
+
     const choose = product => {
         productId.value = product.id;
-        search.value = `${product.name} — ${product.sku}`;
+        search.value = `${product.name} - ${product.sku}`;
         results.classList.remove('open');
         clear.style.display = 'block';
         selected.hidden = false;
         document.querySelector('#selectedName').textContent = product.name;
-        document.querySelector('#selectedMeta').textContent = `${product.sku} · ${product.description || 'Tanpa deskripsi'} · ${product.uom}`;
+        document.querySelector('#selectedMeta').textContent = `${product.sku} · ${product.description || 'Tanpa deskripsi'} · Stok ${formatQuantity(product.inventory_stock)} ${product.uom || 'PCS'}`;
         document.querySelector('#customerPart').value = product.customer_part_no || '';
         document.querySelector('#uom').value = product.uom || 'PCS';
         document.querySelector('#previewName').textContent = product.name;
-        document.querySelector('#previewDesc').textContent = product.description || '—';
-        document.querySelector('#previewCustomer').textContent = product.customer_part_no || '—';
+        document.querySelector('#previewDesc').textContent = product.description || emptyText;
+        document.querySelector('#previewCustomer').textContent = product.customer_part_no || emptyText;
         document.querySelector('#previewSku').textContent = product.sku;
-        document.querySelector('#previewCode').textContent = product.supplier_code || '—';
+        document.querySelector('#previewCode').textContent = product.supplier_code || emptyText;
+        document.querySelector('#previewStock').textContent = `${formatQuantity(product.inventory_stock)} ${product.uom || 'PCS'}`;
+        updatePreviewQty();
         emptyPreview.hidden = true;
         preview.hidden = false;
         generate.disabled = false;
     };
+
     search.addEventListener('focus', () => renderResults(search.value));
     search.addEventListener('input', () => { productId.value = ''; generate.disabled = true; renderResults(search.value); });
     results.addEventListener('click', event => {
@@ -50,10 +61,14 @@ if (builder) {
     });
     clear.addEventListener('click', () => { search.value=''; productId.value=''; selected.hidden=true; clear.style.display='none'; preview.hidden=true; emptyPreview.hidden=false; generate.disabled=true; search.focus(); renderResults(''); });
     document.addEventListener('click', event => { if (!event.target.closest('.product-picker')) results.classList.remove('open'); });
-    document.querySelector('#customerPart').addEventListener('input', event => document.querySelector('#previewCustomer').textContent = event.target.value || '—');
-    document.querySelector('#purchaseOrder').addEventListener('input', event => document.querySelector('#previewPo').textContent = event.target.value || '—');
-    document.querySelector('#quantity').addEventListener('input', event => document.querySelector('#previewQty').textContent = `${event.target.value || '—'} ${document.querySelector('#uom').value}`);
-    document.querySelector('#uom').addEventListener('input', event => document.querySelector('#previewQty').textContent = `${document.querySelector('#quantity').value || '—'} ${event.target.value}`);
+    document.querySelector('#customerPart').addEventListener('input', event => document.querySelector('#previewCustomer').textContent = event.target.value || emptyText);
+    document.querySelector('#purchaseOrder').addEventListener('input', event => document.querySelector('#previewPo').textContent = event.target.value || emptyText);
+    document.querySelector('#deliveryNote').addEventListener('input', event => document.querySelector('#previewDelivery').textContent = event.target.value || emptyText);
+    document.querySelector('#quantity').addEventListener('input', updatePreviewQty);
+    document.querySelector('#uom').addEventListener('input', updatePreviewQty);
+    document.querySelector('#senderAddress').addEventListener('input', event => document.querySelector('#previewSender').textContent = event.target.value || emptyText);
+    document.querySelector('#recipientAddress').addEventListener('input', event => document.querySelector('#previewRecipient').textContent = event.target.value || emptyText);
+
     if (productId.value) {
         const initial = products.find(product => String(product.id) === productId.value);
         if (initial) choose(initial);
@@ -81,7 +96,7 @@ if (bulkPrint) {
         selectAll.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
         printButton.disabled = selected.length === 0 || pages > 300;
         labelCount.textContent = `${selected.length} label dipilih`;
-        pageCount.textContent = pages > 300 ? `${pages} halaman — melewati batas 300` : `${pages} halaman PDF`;
+        pageCount.textContent = pages > 300 ? `${pages} halaman - melewati batas 300` : `${pages} halaman PDF`;
     };
 
     selectAll?.addEventListener('change', () => {

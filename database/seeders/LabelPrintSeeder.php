@@ -32,9 +32,13 @@ class LabelPrintSeeder extends Seeder
                     'product_id' => $product->id,
                     'created_by' => $admin->id,
                     'purchase_order_no' => sprintf('DEMO-%s-%02d', $createdAt->format('Ym'), $sequence),
+                    'delivery_note_no' => sprintf('SJ-DEMO-%s-%02d', $createdAt->format('Ym'), $sequence),
                     'customer_part_no' => $product->customer_part_no,
                     'quantity' => [25, 50, 100, 250, 500][$index % 5],
+                    'inventory_stock' => 0,
                     'uom' => $product->uom,
+                    'sender_address' => 'PT WAF Indonesia, Kawasan Industri Demo, Bekasi',
+                    'recipient_address' => 'Customer Demo, Gudang Penerima, Jakarta',
                     'barcode_value' => $product->barcode_value,
                     'product_snapshot' => $product->only([
                         'sku', 'name', 'description', 'customer_part_no',
