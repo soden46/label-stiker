@@ -151,7 +151,7 @@ class LabelWorkflowTest extends TestCase
         $response = $this->actingAs($user)->get(route('labels.create'));
 
         $response->assertOk()
-            ->assertSee('"inventory_stock":42', false)
+            ->assertSee('&quot;inventory_stock&quot;:42', false)
             ->assertDontSee('selling_price', false)
             ->assertDontSee('99000', false);
     }
