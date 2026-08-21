@@ -56,7 +56,7 @@ class LabelWorkflowTest extends TestCase
             ->assertSee('ALAMAT PENERIMA');
     }
 
-    public function test_admin_can_generate_and_download_a_label(): void
+    public function test_admin_can_generate_and_view_a_label_pdf(): void
     {
         $user = User::factory()->create();
         $product = Product::create([
@@ -93,7 +93,8 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.pdf', $label))
             ->assertOk()
-            ->assertHeader('content-type', 'application/pdf');
+            ->assertHeader('content-type', 'application/pdf')
+            ->assertHeader('content-disposition', 'inline; filename=label-1011873938.pdf');
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
@@ -127,9 +128,21 @@ class LabelWorkflowTest extends TestCase
             'copies' => [$label->id => 3],
         ]);
 
-        $response->assertOk()->assertHeader('content-type', 'application/pdf');
+        $response->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+        $this->assertStringStartsWith('inline; filename=label-bulk-', $response->headers->get('content-disposition'));
         $this->assertSame(3, preg_match_all('/\/Type\s*\/Page\b/', $response->getContent()));
         $this->assertNotNull($label->fresh()->printed_at);
+    }
+
+    public function test_label_pdf_keeps_marked_small_text_bold(): void
+    {
+        $html = view('labels.pdf', ['pages' => []])->render();
+
+        $this->assertStringContainsString('.sticker-product small', $html);
+        $this->assertStringContainsString('font-weight: bold;', $html);
+        $this->assertStringContainsString('.sticker-addresses span', $html);
+        $this->assertStringContainsString('.sticker-barcodes small', $html);
     }
 
     public function test_create_label_product_payload_shows_inventory_without_price(): void

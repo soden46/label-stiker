@@ -132,6 +132,7 @@
             margin-top: 1.5mm;
             font-size: 7.5pt;
             line-height: 1;
+            font-weight: bold;
             white-space: nowrap;
         }
 
@@ -281,6 +282,7 @@
             overflow: hidden;
             font-size: 5.4pt;
             line-height: 1.15;
+            font-weight: bold;
         }
 
         /*
@@ -317,6 +319,7 @@
             margin-top: .4mm;
             font-size: 4pt;
             line-height: 1;
+            font-weight: bold;
             letter-spacing: .2mm;
         }
 

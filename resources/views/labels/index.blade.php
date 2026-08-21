@@ -67,7 +67,7 @@
         <div class="bulk-actionbar">
             <div><strong id="selectedLabelCount">0 label dipilih</strong><small id="selectedPageCount">0 halaman PDF</small></div>
             <span class="bulk-note">Maks. 50 copy/label · 300 halaman/file</span>
-            <button class="button button-primary" id="bulkPrintButton" disabled>▦ Generate bulk PDF</button>
+            <button class="button button-primary" id="bulkPrintButton" disabled>▦ Lihat bulk PDF</button>
         </div>
     </form>
 </section>

@@ -28,7 +28,7 @@
             <div><dt>Pengirim</dt><dd>{{ $label->sender_address ?: '-' }}</dd></div>
             <div><dt>Penerima</dt><dd>{{ $label->recipient_address ?: '-' }}</dd></div>
         </dl>
-        <a href="{{ route('labels.pdf', $label) }}" class="button button-primary button-wide">▣ Unduh & cetak PDF</a>
+        <a href="{{ route('labels.pdf', $label) }}" class="button button-primary button-wide">▣ Lihat & cetak PDF</a>
         <a href="{{ route('labels.index') }}" class="button button-ghost button-wide">▦ Pilih bulk print</a>
         <a href="{{ route('labels.create') }}" class="button button-ghost button-wide">＋ Buat label lain</a>
         <p class="print-hint">Driver Zebra: pilih kertas <strong>100 × 100 mm</strong>, skala <strong>Actual size / 100%</strong>, margin none, media <strong>Gap/Web</strong>, dan nonaktifkan “Fit to page”.</p>

@@ -108,7 +108,7 @@ class LabelPrintController extends Controller
             'pages' => $this->printPages(collect([$labelPrint->fresh()]), [], $barcode, $branding),
         ])
             ->setPaper([0, 0, 283.465, 283.465])
-            ->download('label-'.$labelPrint->purchase_order_no.'.pdf');
+            ->stream('label-'.$labelPrint->purchase_order_no.'.pdf');
     }
 
     public function bulkPdf(Request $request, BarcodeService $barcode, LabelBrandingService $branding)
@@ -137,7 +137,7 @@ class LabelPrintController extends Controller
             'pages' => $this->printPages($labels, $copies, $barcode, $branding),
         ])
             ->setPaper([0, 0, 283.465, 283.465])
-            ->download('label-bulk-'.now()->format('Ymd-His').'.pdf');
+            ->stream('label-bulk-'.now()->format('Ymd-His').'.pdf');
     }
 
     private function viewData(LabelPrint $labelPrint, BarcodeService $barcode, LabelBrandingService $branding): array
