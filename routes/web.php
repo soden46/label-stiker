@@ -12,6 +12,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => auth()->check() ? redirect(auth()->user()->homePath()) : redirect()->route('login'));
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'portal:backoffice'])->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->middleware('permission:products.manage')->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('permission:products.manage')->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('permission:products.manage')->name('products.destroy');
+    Route::resource('warehouses', WarehouseController::class)->except(['create', 'show'])->middleware('permission:inventory.manage');
     Route::get('/settings', [LabelSettingController::class, 'edit'])->middleware('permission:branding.manage')->name('settings.edit');
     Route::put('/settings', [LabelSettingController::class, 'update'])->middleware('permission:branding.manage')->name('settings.update');
     Route::delete('/settings/logo', [LabelSettingController::class, 'destroy'])->middleware('permission:branding.manage')->name('settings.logo.destroy');

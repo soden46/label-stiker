@@ -49,6 +49,16 @@
                             </option>
                         @endforeach
                     </select>
+                    @if($warehouses->isEmpty())
+                        <small class="input-hint">
+                            Belum ada gudang aktif.
+                            @if(auth()->user()->canAccess('inventory.manage'))
+                                <a href="{{ route('warehouses.index') }}">Tambah gudang dulu</a>.
+                            @else
+                                Hubungi admin untuk membuat master gudang.
+                            @endif
+                        </small>
+                    @endif
                 </div>
                 <div class="field">
                     <label for="quantity">Qty <b>*</b></label>
@@ -67,7 +77,7 @@
         </div>
 
         <div class="edit-form-actions">
-            <button class="button button-primary" type="submit">{{ $isIn ? 'Simpan stock masuk' : 'Simpan stock keluar' }}</button>
+            <button class="button button-primary" type="submit" @disabled($warehouses->isEmpty() || $products->isEmpty())>{{ $isIn ? 'Simpan stock masuk' : 'Simpan stock keluar' }}</button>
         </div>
     </form>
 

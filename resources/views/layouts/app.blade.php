@@ -23,6 +23,7 @@
             @if(auth()->user()->canAccess('labels.create'))<a href="{{ route('labels.create') }}" class="nav-item {{ request()->routeIs('labels.create', 'labels.show') ? 'active' : '' }}"><span class="nav-icon">&#9635;</span> Label barcode</a>@endif
             @if(auth()->user()->canAccess('labels.view'))<a href="{{ route('labels.index') }}" class="nav-item {{ request()->routeIs('labels.index') ? 'active' : '' }}"><span class="nav-icon">&#9638;</span> Bulk print</a>@endif
             @if(auth()->user()->canAccess('products.view'))<a href="{{ route('products.index') }}" class="nav-item {{ request()->routeIs('products.*') ? 'active' : '' }}"><span class="nav-icon">&#9671;</span> Master part</a>@endif
+            @if(auth()->user()->canAccess('inventory.manage'))<a href="{{ route('warehouses.index') }}" class="nav-item {{ request()->routeIs('warehouses.*') ? 'active' : '' }}"><span class="nav-icon">&#9637;</span> Master gudang</a>@endif
             @if(auth()->user()->canAccess('branding.manage'))<a href="{{ route('settings.edit') }}" class="nav-item {{ request()->routeIs('settings.*') ? 'active' : '' }}"><span class="nav-icon">&#9881;</span> Pengaturan</a>@endif
 
             @if(auth()->user()->isSuperAdmin())

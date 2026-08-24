@@ -92,6 +92,7 @@ class User extends Authenticatable
             'labels.create' => '/labels/create',
             'labels.view' => '/labels',
             'products.view' => '/products',
+            'inventory.manage' => '/warehouses',
             'branding.manage' => '/settings',
         ] as $permission => $path) {
             if ($this->canAccess($permission)) {
