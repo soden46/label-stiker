@@ -38,7 +38,7 @@
             height: 70mm;
             padding: 3mm;
             overflow: hidden;
-            background: #ffc400;
+            background: #050505;
         }
 
         table {
@@ -103,7 +103,7 @@
             width: 75%;
             padding: 1.5mm 2mm;
             background: #fff;
-            border-left: 2mm solid #ffc400;
+            border-left: 2mm solid #050505;
             text-align: center;
             vertical-align: middle;
             overflow: hidden;
@@ -170,8 +170,8 @@
         .field-titles td {
             height: 5mm;
             padding: 0 .7mm;
-            color: #050505;
-            background: #ffc400;
+            color: #fff;
+            background: #050505;
             vertical-align: middle;
             font-size: 5.5pt;
             font-weight: bold;
@@ -183,7 +183,7 @@
             height: 10.5mm;
             padding: 1mm .7mm;
             background: #fff;
-            border-right: 1.4mm solid #ffc400;
+            border-right: 1.4mm solid #050505;
             vertical-align: middle;
             font-size: 7.4pt;
             line-height: 1.05;
@@ -249,7 +249,7 @@
             height: 14.5mm;
             padding: .8mm 1mm;
             background: #fff;
-            border-right: 1.4mm solid #ffc400;
+            border-right: 1.4mm solid #050505;
             text-align: left;
             vertical-align: top;
             overflow: hidden;

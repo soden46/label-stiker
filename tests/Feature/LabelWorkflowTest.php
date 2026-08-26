@@ -139,6 +139,9 @@ class LabelWorkflowTest extends TestCase
     {
         $html = view('labels.pdf', ['pages' => []])->render();
 
+        $this->assertStringNotContainsString('#ffc400', $html);
+        $this->assertStringContainsString('background: #050505;', $html);
+        $this->assertStringContainsString('color: #fff;', $html);
         $this->assertStringContainsString('.sticker-product small', $html);
         $this->assertStringContainsString('font-weight: bold;', $html);
         $this->assertStringContainsString('.sticker-addresses span', $html);
