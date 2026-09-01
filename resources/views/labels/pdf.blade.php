@@ -19,11 +19,11 @@
             margin: 0;
             padding: 0;
             color: #050505;
-            font-family: DejaVu Sans, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
         }
 
         .sticker-page {
-            width: 92mm;
+            width: 100mm;
             padding: 4mm;
             overflow: hidden;
             page-break-after: always;
@@ -34,11 +34,11 @@
         }
 
         .sticker-panel {
-            width: 86mm;
+            width: 92mm;
             height: 70mm;
-            padding: 3mm;
+            padding: 3.5mm;
             overflow: hidden;
-            background: #050505;
+            background: #ffc400;
         }
 
         table {
@@ -53,7 +53,7 @@
         */
 
         .sticker-header {
-            width: 86mm;
+            width: 85mm;
             height: 16mm;
         }
 
@@ -103,7 +103,7 @@
             width: 75%;
             padding: 1.5mm 2mm;
             background: #fff;
-            border-left: 2mm solid #050505;
+            border-left: 4mm solid #ffc400;
             text-align: center;
             vertical-align: middle;
             overflow: hidden;
@@ -113,26 +113,22 @@
             display: block;
             max-width: 100%;
             overflow: hidden;
-            font-size: 12pt;
+            font-size: 18pt;
             line-height: 1.05;
             font-weight: bold;
             white-space: nowrap;
         }
 
         .sticker-product strong.is-long {
-            font-size: 10pt;
+            font-size: 15pt;
         }
 
-        /*
-         * REVISI:
-         * PORT SIZE diperbesar
-         */
         .sticker-product small {
             display: block;
-            margin-top: 1.5mm;
-            font-size: 7.5pt;
+            margin-top: 1mm;
+            font-size: 8pt;
             line-height: 1;
-            font-weight: bold;
+            font-weight: normal;
             white-space: nowrap;
         }
 
@@ -143,7 +139,7 @@
         */
 
         .sticker-fields {
-            width: 86mm;
+            width: 85mm;
         }
 
         .sticker-fields td {
@@ -152,7 +148,7 @@
         }
 
         .sticker-fields-top {
-            margin-top: 2mm;
+            margin-top: 3mm;
         }
 
         .sticker-fields-top td:nth-child(1) {
@@ -168,24 +164,25 @@
         }
 
         .field-titles td {
-            height: 5mm;
+            height: 6mm;
             padding: 0 .7mm;
-            color: #fff;
-            background: #050505;
+            color: #050505;
+            background: #ffc400;
             vertical-align: middle;
-            font-size: 5.5pt;
+            font-size: 7.4pt;
+            line-height: 1;
             font-weight: bold;
-            letter-spacing: .15mm;
+            letter-spacing: .6mm;
             white-space: nowrap;
         }
 
         .field-values td {
-            height: 10.5mm;
+            height: 12mm;
             padding: 1mm .7mm;
             background: #fff;
-            border-right: 1.4mm solid #050505;
+            border-right: 1.5mm solid #ffc400;
             vertical-align: middle;
-            font-size: 7.4pt;
+            font-size: 10.5pt;
             line-height: 1.05;
             font-weight: bold;
             white-space: nowrap;
@@ -196,7 +193,7 @@
         }
 
         .field-values td.value-po {
-            font-size: 6.7pt;
+            font-size: 10pt;
         }
 
         /*
@@ -206,83 +203,37 @@
         */
 
         .sticker-fields-bottom {
-            margin-top: 2mm;
+            margin-top: 3mm;
         }
 
         .sticker-fields-bottom td:nth-child(1) {
-            width: 28%;
+            width: 42%;
         }
 
         .sticker-fields-bottom td:nth-child(2) {
-            width: 18%;
+            width: 22%;
         }
 
         .sticker-fields-bottom td:nth-child(3) {
-            width: 28%;
-        }
-
-        .sticker-fields-bottom td:nth-child(4) {
-            width: 26%;
+            width: 36%;
         }
 
         .sticker-fields-bottom .field-values td {
-            height: 10.5mm;
-            font-size: 6.2pt;
+            height: 13mm;
+            font-size: 12pt;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADDRESS
-        |--------------------------------------------------------------------------
-        */
-
-        .sticker-addresses {
-            width: 86mm;
-            margin-top: 2mm;
-        }
-
-        /*
-         * Tinggi sedikit dinaikkan supaya font alamat
-         * yang lebih besar tetap muat.
-         */
-        .sticker-addresses td {
-            height: 14.5mm;
-            padding: .8mm 1mm;
-            background: #fff;
-            border-right: 1.4mm solid #050505;
-            text-align: left;
-            vertical-align: top;
-            overflow: hidden;
-        }
-
-        .sticker-addresses td:last-child {
-            border-right: 0;
-        }
-
-        /*
-         * REVISI:
-         * "Alamat Pengirim" dan "Alamat Penerima"
-         * diperbesar.
-         */
-        .sticker-addresses strong {
-            display: block;
-            margin-bottom: .8mm;
-            font-size: 5.5pt;
-            line-height: 1.1;
-            font-weight: bold;
-        }
-
-        /*
-         * REVISI:
-         * Isi alamat juga diperbesar.
-         */
-        .sticker-addresses span {
-            display: block;
-            max-height: 10.2mm;
-            overflow: hidden;
-            font-size: 5.4pt;
-            line-height: 1.15;
-            font-weight: bold;
+        .sticker-standard {
+            padding: 0 0 0 2.5mm !important;
+            background: #ffc400 !important;
+            color: #050505 !important;
+            text-align: left !important;
+            vertical-align: bottom !important;
+            font-size: 4.3pt !important;
+            line-height: 1.25 !important;
+            font-weight: bold !important;
+            letter-spacing: 0 !important;
+            white-space: normal !important;
         }
 
         /*
@@ -293,46 +244,22 @@
 
         .sticker-barcodes {
             width: 92mm;
-            height: 12mm;
-            margin-top: 1.7mm;
+            height: 11.5mm;
+            margin-top: 1.5mm;
         }
 
         .sticker-barcodes td {
             width: 50%;
-            height: 12mm;
-            padding: 0 1.5mm;
+            height: 11.5mm;
+            padding: 0 2mm;
             text-align: center;
             vertical-align: top;
         }
 
         .sticker-barcode-canvas {
             width: 100%;
-            height: 9.2mm;
+            height: 11.5mm;
             overflow: hidden;
-        }
-
-        /*
-         * Default tulisan barcode kanan/kiri.
-         */
-        .sticker-barcodes small {
-            display: block;
-            margin-top: .4mm;
-            font-size: 4pt;
-            line-height: 1;
-            font-weight: bold;
-            letter-spacing: .2mm;
-        }
-
-        /*
-         * REVISI:
-         * Part Number di bawah barcode kiri diperbesar.
-         */
-        .sticker-barcodes td:first-child small {
-            margin-top: .5mm;
-            font-size: 5.5pt;
-            line-height: 1;
-            font-weight: bold;
-            letter-spacing: .15mm;
         }
     </style>
 </head>

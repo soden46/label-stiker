@@ -44,16 +44,19 @@ class LabelWorkflowTest extends TestCase
         $this->get('/pos')->assertOk()->assertSee('Terminal penjualan');
     }
 
-    public function test_create_label_preview_includes_delivery_and_inventory_fields(): void
+    public function test_create_label_preview_matches_reference_label_content(): void
     {
         $user = User::factory()->create();
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
-            ->assertSee('SURAT JALAN')
-            ->assertSee('STOCK INV.')
-            ->assertSee('ALAMAT PENGIRIM')
-            ->assertSee('ALAMAT PENERIMA');
+            ->assertSee('WAF PART NO.')
+            ->assertSee('CODE.')
+            ->assertSee('MANUFACTURED TO WAF')
+            ->assertSee('ISO 9001 2015 CERTIFIED')
+            ->assertDontSee('STOCK INV.')
+            ->assertDontSee('ALAMAT PENGIRIM')
+            ->assertDontSee('ALAMAT PENERIMA');
     }
 
     public function test_admin_can_generate_and_view_a_label_pdf(): void
@@ -135,17 +138,15 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
-    public function test_label_pdf_keeps_marked_small_text_bold(): void
+    public function test_label_pdf_uses_reference_yellow_panel_and_standard_text(): void
     {
         $html = view('labels.pdf', ['pages' => []])->render();
 
-        $this->assertStringNotContainsString('#ffc400', $html);
-        $this->assertStringContainsString('background: #050505;', $html);
-        $this->assertStringContainsString('color: #fff;', $html);
+        $this->assertStringContainsString('#ffc400', $html);
+        $this->assertStringContainsString('background: #ffc400;', $html);
         $this->assertStringContainsString('.sticker-product small', $html);
-        $this->assertStringContainsString('font-weight: bold;', $html);
-        $this->assertStringContainsString('.sticker-addresses span', $html);
-        $this->assertStringContainsString('.sticker-barcodes small', $html);
+        $this->assertStringContainsString('.sticker-standard', $html);
+        $this->assertStringNotContainsString('.sticker-addresses', $html);
     }
 
     public function test_create_label_product_payload_shows_inventory_without_price(): void

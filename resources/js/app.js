@@ -46,7 +46,6 @@ if (builder) {
         document.querySelector('#previewCustomer').textContent = product.customer_part_no || emptyText;
         document.querySelector('#previewSku').textContent = product.sku;
         document.querySelector('#previewCode').textContent = product.supplier_code || emptyText;
-        document.querySelector('#previewStock').textContent = `${formatQuantity(product.inventory_stock)} ${product.uom || 'PCS'}`;
         updatePreviewQty();
         emptyPreview.hidden = true;
         preview.hidden = false;
@@ -63,11 +62,8 @@ if (builder) {
     document.addEventListener('click', event => { if (!event.target.closest('.product-picker')) results.classList.remove('open'); });
     document.querySelector('#customerPart').addEventListener('input', event => document.querySelector('#previewCustomer').textContent = event.target.value || emptyText);
     document.querySelector('#purchaseOrder').addEventListener('input', event => document.querySelector('#previewPo').textContent = event.target.value || emptyText);
-    document.querySelector('#deliveryNote').addEventListener('input', event => document.querySelector('#previewDelivery').textContent = event.target.value || emptyText);
     document.querySelector('#quantity').addEventListener('input', updatePreviewQty);
     document.querySelector('#uom').addEventListener('input', updatePreviewQty);
-    document.querySelector('#senderAddress').addEventListener('input', event => document.querySelector('#previewSender').textContent = event.target.value || emptyText);
-    document.querySelector('#recipientAddress').addEventListener('input', event => document.querySelector('#previewRecipient').textContent = event.target.value || emptyText);
 
     if (productId.value) {
         const initial = products.find(product => String(product.id) === productId.value);

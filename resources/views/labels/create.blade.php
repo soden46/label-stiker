@@ -62,8 +62,7 @@
         <div class="preview-content" id="previewContent" hidden>
             <div class="preview-yellow">
                 <div class="preview-title"><strong id="previewName">-</strong><small id="previewDesc">-</small></div>
-                <div class="preview-cells"><span><small>CUST PART.</small><b id="previewCustomer">-</b></span><span><small>P.O NUMBER.</small><b id="previewPo">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span><small>WAF PART NO.</small><b id="previewSku">-</b></span><span><small>CODE.</small><b id="previewCode">-</b></span><span><small>SURAT JALAN</small><b id="previewDelivery">-</b></span><span><small>STOCK INV.</small><b id="previewStock">0 PCS</b></span></div>
-                <div class="preview-addresses"><span><small>ALAMAT PENGIRIM</small><b id="previewSender">-</b></span><span><small>ALAMAT PENERIMA</small><b id="previewRecipient">-</b></span></div>
+                <div class="preview-cells"><span><small>CUST PART.</small><b id="previewCustomer">-</b></span><span><small>P.O NUMBER.</small><b id="previewPo">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span><small>WAF PART NO.</small><b id="previewSku">-</b></span><span><small>CODE.</small><b id="previewCode">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
             </div>
             <div class="fake-barcode">||||| || ||| ||||| | |||| || |||</div>
         </div>
