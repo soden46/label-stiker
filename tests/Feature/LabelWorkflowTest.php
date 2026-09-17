@@ -50,10 +50,13 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
-            ->assertSee('WAF PART NO.')
-            ->assertSee('CODE.')
+            ->assertSee('WAF No.')
+            ->assertSee('Company.')
+            ->assertSee('Catalog')
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
+            ->assertDontSee('DIN')
+            ->assertDontSee('CODE.')
             ->assertDontSee('STOCK INV.')
             ->assertDontSee('ALAMAT PENGIRIM')
             ->assertDontSee('ALAMAT PENERIMA');
@@ -138,14 +141,17 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
-    public function test_label_pdf_uses_reference_yellow_panel_and_standard_text(): void
+    public function test_label_pdf_uses_reference_black_panel_and_standard_text(): void
     {
         $html = view('labels.pdf', ['pages' => []])->render();
 
-        $this->assertStringContainsString('#ffc400', $html);
-        $this->assertStringContainsString('background: #ffc400;', $html);
-        $this->assertStringContainsString('.sticker-product small', $html);
+        $this->assertStringContainsString('#050505', $html);
+        $this->assertStringContainsString('background: #050505;', $html);
+        $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
+        $this->assertStringContainsString('.barcode-title', $html);
+        $this->assertStringContainsString('.barcode-title-right', $html);
+        $this->assertStringNotContainsString('.sticker-din', $html);
         $this->assertStringNotContainsString('.sticker-addresses', $html);
     }
 

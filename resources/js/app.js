@@ -45,7 +45,7 @@ if (builder) {
         document.querySelector('#previewDesc').textContent = product.description || emptyText;
         document.querySelector('#previewCustomer').textContent = product.customer_part_no || emptyText;
         document.querySelector('#previewSku').textContent = product.sku;
-        document.querySelector('#previewCode').textContent = product.supplier_code || emptyText;
+        document.querySelector('#previewCode') && (document.querySelector('#previewCode').textContent = product.supplier_code || emptyText);
         updatePreviewQty();
         emptyPreview.hidden = true;
         preview.hidden = false;

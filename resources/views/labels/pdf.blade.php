@@ -16,17 +16,24 @@
         html,
         body {
             width: 100mm;
+            height: 100mm;
             margin: 0;
             padding: 0;
             color: #050505;
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: "Bahnschrift", "Arial Narrow", "DejaVu Sans", Helvetica, Arial, sans-serif;
         }
 
         .sticker-page {
             width: 100mm;
-            padding: 4mm;
+            padding: 1mm 3mm 0 3mm;
+            position: relative;
             overflow: hidden;
-            page-break-after: always;
+            page-break-before: auto;
+            page-break-after: auto;
+        }
+
+        .sticker-page.first-page {
+            page-break-before: auto;
         }
 
         .sticker-page.last-page {
@@ -34,11 +41,17 @@
         }
 
         .sticker-panel {
-            width: 92mm;
-            height: 70mm;
-            padding: 3.5mm;
+            width: 89mm;
+            height: 65mm;
+            padding: 2.5mm;
             overflow: hidden;
-            background: #ffc400;
+            background: #050505;
+            border-radius: 5mm 5mm 0 0;
+        }
+
+        .sticker-body {
+            width: 94mm;
+            margin-top: 0;
         }
 
         table {
@@ -53,83 +66,85 @@
         */
 
         .sticker-header {
-            width: 85mm;
-            height: 16mm;
+            width: 89mm;
+            height: 19mm;
         }
 
         .sticker-logo {
-            width: 25%;
             color: #fff;
             background: #050505;
-            border: .45mm solid #fff;
+            border: .35mm solid #2b5a9e;
             text-align: center;
             vertical-align: middle;
         }
 
         .sticker-logo strong {
             display: block;
-            font-size: 14pt;
+            font-size: 9pt;
             line-height: 1;
+            font-weight: 900;
         }
 
         .sticker-logo small {
             display: block;
-            margin-top: 1.2mm;
-            padding-top: .6mm;
-            font-size: 3.5pt;
+            margin-top: .8mm;
+            padding-top: .4mm;
+            font-size: 3.8pt;
+            line-height: 1;
             border-top: .2mm solid #fff;
+            font-weight: 700;
         }
 
         .sticker-logo.has-image {
-            padding: 1mm;
-            background: #fff;
-            border-color: #fff;
+            padding: .7mm;
+            background: #050505;
         }
 
         .sticker-logo-image {
             display: block;
-            max-width: 18mm;
-            max-height: 12mm;
+            max-width: 12mm;
+            max-height: 15mm;
             margin: 0 auto;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | PRODUCT NAME + PORT SIZE
+        | DESCRIPTION
         |--------------------------------------------------------------------------
         */
 
-        .sticker-product {
-            width: 75%;
-            padding: 1.5mm 2mm;
+        .sticker-description {
+            padding: 2mm 2mm;
             background: #fff;
-            border-left: 4mm solid #ffc400;
-            text-align: center;
-            vertical-align: middle;
+            border-left: 3.2mm solid #050505;
+            text-align: left;
+            vertical-align: top;
             overflow: hidden;
         }
 
-        .sticker-product strong {
+        .sticker-description span,
+        .sticker-description strong {
             display: block;
             max-width: 100%;
             overflow: hidden;
-            font-size: 18pt;
-            line-height: 1.05;
-            font-weight: bold;
             white-space: nowrap;
         }
 
-        .sticker-product strong.is-long {
-            font-size: 15pt;
-        }
-
-        .sticker-product small {
-            display: block;
-            margin-top: 1mm;
-            font-size: 8pt;
+        .sticker-description span {
+            font-size: 8.5pt;
             line-height: 1;
-            font-weight: normal;
-            white-space: nowrap;
+            font-weight: 900;
+        }
+
+        .sticker-description strong {
+            margin-top: 1.6mm;
+            font-size: 10.5pt;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        .sticker-description strong.is-long {
+            font-size: 8.8pt;
         }
 
         /*
@@ -139,7 +154,7 @@
         */
 
         .sticker-fields {
-            width: 85mm;
+            width: 89mm;
         }
 
         .sticker-fields td {
@@ -148,43 +163,31 @@
         }
 
         .sticker-fields-top {
-            margin-top: 3mm;
-        }
-
-        .sticker-fields-top td:nth-child(1) {
-            width: 35%;
-        }
-
-        .sticker-fields-top td:nth-child(2) {
-            width: 38%;
-        }
-
-        .sticker-fields-top td:nth-child(3) {
-            width: 27%;
+            margin-top: 1.8mm;
         }
 
         .field-titles td {
-            height: 6mm;
+            height: 4.8mm;
             padding: 0 .7mm;
-            color: #050505;
-            background: #ffc400;
+            color: #fff;
+            background: #050505;
             vertical-align: middle;
-            font-size: 7.4pt;
+            font-size: 8pt;
             line-height: 1;
-            font-weight: bold;
-            letter-spacing: .6mm;
+            font-weight: 900;
+            letter-spacing: 0;
             white-space: nowrap;
         }
 
         .field-values td {
-            height: 12mm;
+            height: 15mm;
             padding: 1mm .7mm;
             background: #fff;
-            border-right: 1.5mm solid #ffc400;
+            border-right: 2.2mm solid #050505;
             vertical-align: middle;
             font-size: 10.5pt;
             line-height: 1.05;
-            font-weight: bold;
+            font-weight: 900;
             white-space: nowrap;
         }
 
@@ -193,7 +196,7 @@
         }
 
         .field-values td.value-po {
-            font-size: 10pt;
+            font-size: 9.2pt;
         }
 
         /*
@@ -203,35 +206,23 @@
         */
 
         .sticker-fields-bottom {
-            margin-top: 3mm;
-        }
-
-        .sticker-fields-bottom td:nth-child(1) {
-            width: 42%;
-        }
-
-        .sticker-fields-bottom td:nth-child(2) {
-            width: 22%;
-        }
-
-        .sticker-fields-bottom td:nth-child(3) {
-            width: 36%;
+            margin-top: 1.8mm;
         }
 
         .sticker-fields-bottom .field-values td {
-            height: 13mm;
-            font-size: 12pt;
+            height: 14mm;
+            font-size: 10pt;
         }
 
         .sticker-standard {
-            padding: 0 0 0 2.5mm !important;
-            background: #ffc400 !important;
-            color: #050505 !important;
+            padding: 0 0 0 2.4mm !important;
+            background: #050505 !important;
+            color: #fff !important;
             text-align: left !important;
             vertical-align: bottom !important;
-            font-size: 4.3pt !important;
-            line-height: 1.25 !important;
-            font-weight: bold !important;
+            font-size: 5.2pt !important;
+            line-height: 1.15 !important;
+            font-weight: 900 !important;
             letter-spacing: 0 !important;
             white-space: normal !important;
         }
@@ -243,23 +234,42 @@
         */
 
         .sticker-barcodes {
-            width: 92mm;
-            height: 11.5mm;
-            margin-top: 1.5mm;
+            width: 94mm;
+            height: 21mm;
+            border-left: .25mm solid #8a8a8a;
+            border-right: .25mm solid #8a8a8a;
+            border-bottom: .25mm solid #8a8a8a;
+            background: #fff;
         }
 
         .sticker-barcodes td {
             width: 50%;
-            height: 11.5mm;
-            padding: 0 2mm;
+            height: 21mm;
+            padding: 1.5mm 3.5mm 1.8mm 3.5mm;
             text-align: center;
             vertical-align: top;
         }
 
+        .barcode-title {
+            margin-bottom: .8mm;
+            font-size: 8pt;
+            line-height: 1;
+            font-weight: 900;
+            text-align: left;
+        }
+
+        .barcode-title-right {
+            text-align: right;
+        }
+
         .sticker-barcode-canvas {
             width: 100%;
-            height: 11.5mm;
+            height: 14mm;
             overflow: hidden;
+        }
+
+        .sticker-barcode-canvas div {
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -281,6 +291,7 @@
     ])
 
     @php($isPdfLast = $loop->last)
+    @php($isPdfFirst = $loop->first)
 
     @include('labels._label')
 

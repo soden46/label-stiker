@@ -61,10 +61,11 @@
         <div class="empty-preview" id="emptyPreview"><div class="barcode-placeholder">|||| ||| || ||||</div><strong>Label menunggu data</strong><p>Pilih part untuk melihat gambaran label.</p></div>
         <div class="preview-content" id="previewContent" hidden>
             <div class="preview-yellow">
-                <div class="preview-title"><strong id="previewName">-</strong><small id="previewDesc">-</small></div>
-                <div class="preview-cells"><span><small>CUST PART.</small><b id="previewCustomer">-</b></span><span><small>P.O NUMBER.</small><b id="previewPo">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span><small>WAF PART NO.</small><b id="previewSku">-</b></span><span><small>CODE.</small><b id="previewCode">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
+                <div class="preview-head"><div class="preview-logo"><strong>WAF</strong><small>SPARE PARTS</small></div><div class="preview-title"><small>Description.</small><strong id="previewDesc">-</strong><b id="previewName">-</b></div></div>
+                <div class="preview-cells preview-cells-top"><span><small>Cust No.</small><b id="previewCustomer">-</b></span><span><small>P.O No.</small><b id="previewPo">-</b></span></div>
+                <div class="preview-cells preview-cells-bottom"><span><small>WAF No.</small><b id="previewSku">-</b></span><span><small>Qty.</small><b id="previewQty">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
             </div>
-            <div class="fake-barcode">||||| || ||| ||||| | |||| || |||</div>
+            <div class="fake-barcode"><span>Company.</span><span>Catalog</span><b>||||| || ||| ||||| | |||| || |||</b></div>
         </div>
         <ul class="preview-tips"><li><span>✓</span> Code 128 mudah dibaca scanner kasir</li><li><span>✓</span> Data part dan stok inventory dibekukan saat label dibuat</li><li><span>✓</span> Halaman PDF native 100 x 100 mm</li></ul>
     </aside>
