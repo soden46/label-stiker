@@ -80,8 +80,11 @@ class LabelPrintController extends Controller
             $logoPath = "logos/labels/{$uuid}.{$extension}";
             Storage::disk('public')->copy($product->logo_path, $logoPath);
         }
+        $validated = collect($request->validated())->except('logo')->all();
         $labelPrint = LabelPrint::create([
-            ...collect($request->validated())->except('logo')->all(),
+            ...$validated,
+            'purchase_order_no' => $validated['purchase_order_no'] ?? '',
+            'quantity' => $validated['quantity'] ?? 0,
             'uuid' => $uuid,
             'created_by' => $request->user()->id,
             'barcode_value' => $product->barcode_value,
@@ -108,7 +111,7 @@ class LabelPrintController extends Controller
             'pages' => $this->printPages(collect([$labelPrint->fresh()]), [], $barcode, $branding),
         ])
             ->setPaper([0, 0, 283.465, 283.465])
-            ->stream('label-'.$labelPrint->purchase_order_no.'.pdf');
+            ->stream('label-'.($labelPrint->purchase_order_no ?: $labelPrint->uuid).'.pdf');
     }
 
     public function bulkPdf(Request $request, BarcodeService $barcode, LabelBrandingService $branding)

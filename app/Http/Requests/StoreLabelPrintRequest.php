@@ -15,10 +15,10 @@ class StoreLabelPrintRequest extends FormRequest
     {
         return [
             'product_id' => ['required', 'exists:products,id'],
-            'purchase_order_no' => ['required', 'string', 'max:100'],
+            'purchase_order_no' => ['nullable', 'string', 'max:100'],
             'delivery_note_no' => ['required', 'string', 'max:100'],
             'customer_part_no' => ['required', 'string', 'max:100'],
-            'quantity' => ['required', 'integer', 'min:1', 'max:99999999'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:99999999'],
             'uom' => ['required', 'string', 'max:20'],
             'sender_address' => ['required', 'string', 'max:500'],
             'recipient_address' => ['required', 'string', 'max:500'],

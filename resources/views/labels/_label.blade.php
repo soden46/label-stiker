@@ -2,7 +2,7 @@
     <div class="sticker-body">
         <div class="sticker-panel">
             <table class="sticker-header" role="presentation">
-                <colgroup><col style="width:22%"><col style="width:78%"></colgroup>
+                <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
                 <tr>
                     <td class="sticker-logo {{ ($logoDataUri ?? null) ? 'has-image' : '' }}">
                         @if($logoDataUri ?? null)
@@ -33,7 +33,7 @@
             </table>
 
             <table class="sticker-fields sticker-fields-bottom" role="presentation">
-                <colgroup><col style="width:45%"><col style="width:25%"><col style="width:30%"></colgroup>
+                <colgroup><col style="width:42%"><col style="width:22%"><col style="width:36%"></colgroup>
                 <tr class="field-titles">
                     <td>WAF No.</td>
                     <td>Qty.</td>
@@ -46,7 +46,7 @@
                 </tr>
                 <tr class="field-values">
                     <td>{{ $label->product_snapshot['sku'] }}</td>
-                    <td>{{ number_format($label->quantity, 0, ',', '.') }} {{ $label->uom }}</td>
+                    <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
                 </tr>
             </table>
         </div>

@@ -104,6 +104,45 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
+    public function test_po_number_and_quantity_are_optional_when_generating_label(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::create([
+            'sku' => 'OPTIONAL-001',
+            'name' => 'OPTIONAL PART',
+            'description' => 'OPTIONAL LABEL',
+            'customer_part_no' => 'CUST-OPTIONAL-001',
+            'supplier_code' => 'ID',
+            'barcode_value' => 'OPTIONAL-001',
+            'uom' => 'PCS',
+        ]);
+
+        $this->actingAs($user)->get(route('labels.create'))
+            ->assertOk()
+            ->assertSee('P.O number</label><input', false)
+            ->assertSee('Qty</label><input', false)
+            ->assertDontSee('P.O number <b>*</b>', false)
+            ->assertDontSee('Qty <b>*</b>', false);
+
+        $response = $this->actingAs($user)->post(route('labels.store'), [
+            'product_id' => $product->id,
+            'delivery_note_no' => 'SJ-OPTIONAL-001',
+            'customer_part_no' => 'CUST-OPTIONAL-001',
+            'uom' => 'PCS',
+            'sender_address' => 'PT WAF Indonesia, Bekasi',
+            'recipient_address' => 'PT Customer, Jakarta',
+        ]);
+
+        $label = LabelPrint::latest('id')->firstOrFail();
+        $response->assertRedirect(route('labels.show', $label));
+        $this->assertSame('', $label->purchase_order_no);
+        $this->assertSame(0, $label->quantity);
+
+        $this->actingAs($user)->get(route('labels.pdf', $label))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
+
     public function test_admin_can_bulk_print_multiple_copies_on_separate_pages(): void
     {
         $user = User::factory()->create();
@@ -151,6 +190,10 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.barcode-title', $html);
         $this->assertStringContainsString('.barcode-title-right', $html);
+        $this->assertStringContainsString('letter-spacing: 1.3pt;', $html);
+        $this->assertStringContainsString('letter-spacing: 1.1pt;', $html);
+        $this->assertStringContainsString('letter-spacing: .33pt;', $html);
+        $this->assertStringContainsString('height: 17mm;', $html);
         $this->assertStringNotContainsString('.sticker-din', $html);
         $this->assertStringNotContainsString('.sticker-addresses', $html);
     }

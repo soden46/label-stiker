@@ -36,10 +36,10 @@
         <section class="form-step">
             <div class="step-heading"><span>02</span><div><p class="eyebrow">DATA PENGIRIMAN</p><h3>Lengkapi informasi label</h3></div></div>
             <div class="form-grid">
-                <div class="field"><label for="purchaseOrder">P.O number <b>*</b></label><input id="purchaseOrder" name="purchase_order_no" value="{{ old('purchase_order_no') }}" placeholder="Contoh: 1011873938" required></div>
+                <div class="field"><label for="purchaseOrder">P.O number</label><input id="purchaseOrder" name="purchase_order_no" value="{{ old('purchase_order_no') }}" placeholder="Contoh: 1011873938"></div>
                 <div class="field"><label for="deliveryNote">Surat jalan <b>*</b></label><input id="deliveryNote" name="delivery_note_no" value="{{ old('delivery_note_no') }}" placeholder="Contoh: SJ-2026-001" required></div>
                 <div class="field"><label for="customerPart">Customer part no. <b>*</b></label><input id="customerPart" name="customer_part_no" value="{{ old('customer_part_no') }}" placeholder="Terisi dari master data" required></div>
-                <div class="field"><label for="quantity">Qty <b>*</b></label><input type="number" min="1" id="quantity" name="quantity" value="{{ old('quantity') }}" placeholder="100" required></div>
+                <div class="field"><label for="quantity">Qty</label><input type="number" min="1" id="quantity" name="quantity" value="{{ old('quantity') }}" placeholder="100"></div>
                 <div class="field"><label for="uom">Satuan <b>*</b></label><input id="uom" name="uom" value="{{ old('uom', 'PCS') }}" placeholder="PCS" required></div>
             </div>
             <div class="form-grid delivery-address-grid">
