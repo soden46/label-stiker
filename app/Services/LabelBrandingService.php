@@ -22,6 +22,19 @@ class LabelBrandingService
         return $this->dataUri($this->logoPath());
     }
 
+    public function publicLabelLogoDataUri(): ?string
+    {
+        $path = public_path('logo.png');
+
+        if (! is_file($path)) {
+            return null;
+        }
+
+        $mime = mime_content_type($path) ?: 'image/png';
+
+        return 'data:'.$mime.';base64,'.base64_encode(file_get_contents($path));
+    }
+
     public function faviconPath(): ?string
     {
         return AppSetting::value('favicon_path');

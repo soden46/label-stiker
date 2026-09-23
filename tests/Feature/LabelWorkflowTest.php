@@ -51,8 +51,8 @@ class LabelWorkflowTest extends TestCase
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
             ->assertSee('WAF No.')
-            ->assertSee('Company.')
-            ->assertSee('Catalog')
+            ->assertDontSee('Company.')
+            ->assertDontSee('Catalog')
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
             ->assertDontSee('DIN')
@@ -188,8 +188,10 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('background: #050505;', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
-        $this->assertStringContainsString('.barcode-title', $html);
-        $this->assertStringContainsString('.barcode-title-right', $html);
+        $this->assertStringContainsString('.sticker-standard span', $html);
+        $this->assertStringNotContainsString('.barcode-title', $html);
+        $this->assertStringNotContainsString('Company.', $html);
+        $this->assertStringNotContainsString('Catalog', $html);
         $this->assertStringContainsString('letter-spacing: 1.3pt;', $html);
         $this->assertStringContainsString('letter-spacing: 1.1pt;', $html);
         $this->assertStringContainsString('letter-spacing: .33pt;', $html);

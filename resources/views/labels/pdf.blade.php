@@ -71,7 +71,7 @@
         }
 
         .sticker-logo {
-            width: 18%;
+            width: 22%;
             color: #fff;
             background: #050505;
             border: .35mm solid #2b5a9e;
@@ -103,8 +103,8 @@
 
         .sticker-logo-image {
             display: block;
-            max-width: 9.5mm;
-            max-height: 12mm;
+            max-width: 15.5mm;
+            max-height: 13.5mm;
             margin: 0 auto;
         }
 
@@ -228,16 +228,21 @@
         }
 
         .sticker-standard {
-            padding: 0 0 0 2.4mm !important;
+            padding: 0 0 0 1.7mm !important;
             background: #050505 !important;
             color: #fff !important;
             text-align: left !important;
             vertical-align: bottom !important;
-            font-size: 5.8pt !important;
-            line-height: 1.08 !important;
+            font-size: 4.7pt !important;
+            line-height: 1.2 !important;
             font-weight: 700 !important;
-            letter-spacing: .25pt !important;
-            white-space: normal !important;
+            letter-spacing: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        .sticker-standard span {
+            display: block;
+            white-space: nowrap;
         }
 
         /*
@@ -258,27 +263,14 @@
         .sticker-barcodes td {
             width: 50%;
             height: 17mm;
-            padding: .8mm 3.5mm 1mm 3.5mm;
+            padding: 2.5mm 3.5mm 1mm 3.5mm;
             text-align: center;
-            vertical-align: top;
-        }
-
-        .barcode-title {
-            margin-bottom: .5mm;
-            font-size: 10.5pt;
-            line-height: 1;
-            font-weight: 700;
-            text-align: left;
-            letter-spacing: 1.3pt;
-        }
-
-        .barcode-title-right {
-            text-align: right;
+            vertical-align: middle;
         }
 
         .sticker-barcode-canvas {
             width: 100%;
-            height: 10.5mm;
+            height: 12.5mm;
             overflow: hidden;
         }
 

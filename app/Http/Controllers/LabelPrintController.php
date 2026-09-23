@@ -151,7 +151,9 @@ class LabelPrintController extends Controller
             'label' => $labelPrint,
             'partBarcode' => $barcode->html($labelPrint->barcode_value),
             'customerBarcode' => $barcode->html($labelPrint->customer_part_no),
-            'logoDataUri' => $branding->dataUriForPath($labelPrint->logo_path) ?: $branding->logoDataUri(),
+            'logoDataUri' => $branding->dataUriForPath($labelPrint->logo_path)
+                ?: $branding->publicLabelLogoDataUri()
+                ?: $branding->logoDataUri(),
         ];
     }
 
