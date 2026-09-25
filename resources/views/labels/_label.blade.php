@@ -12,31 +12,33 @@
                         @endif
                     </td>
                     <td class="sticker-description">
-                        <span>Description.</span>
-                        <strong class="{{ mb_strlen($label->product_snapshot['description'] ?: ($label->product_snapshot['name'] ?? '')) > 34 ? 'is-long' : '' }}">
-                            {{ $label->product_snapshot['description'] ?: ($label->product_snapshot['name'] ?? '-') }}
+                        <strong class="{{ mb_strlen($label->product_snapshot['name'] ?? '') > 24 ? 'is-long' : '' }}">
+                            {{ $label->product_snapshot['name'] ?? '-' }}
                         </strong>
+                        <span>{{ $label->product_snapshot['description'] ?? '' }}</span>
                     </td>
                 </tr>
             </table>
 
             <table class="sticker-fields sticker-fields-top" role="presentation">
-                <colgroup><col style="width:58%"><col style="width:42%"></colgroup>
+                <colgroup><col style="width:42%"><col style="width:33%"><col style="width:25%"></colgroup>
                 <tr class="field-titles">
-                    <td>Cust No.</td>
-                    <td>P.O No.</td>
+                    <td>CUST PART NO.</td>
+                    <td>P.O NUMBER.</td>
+                    <td>QTY.</td>
                 </tr>
                 <tr class="field-values">
                     <td>{{ $label->customer_part_no }}</td>
                     <td class="value-po">{{ $label->purchase_order_no }}</td>
+                    <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
                 </tr>
             </table>
 
             <table class="sticker-fields sticker-fields-bottom" role="presentation">
-                <colgroup><col style="width:34%"><col style="width:22%"><col style="width:44%"></colgroup>
+                <colgroup><col style="width:42%"><col style="width:23%"><col style="width:35%"></colgroup>
                 <tr class="field-titles">
-                    <td>WAF No.</td>
-                    <td>Qty.</td>
+                    <td>WAF PART NO.</td>
+                    <td>CODE.</td>
                     <td class="sticker-standard" rowspan="2">
                         <span>MANUFACTURED TO WAF</span>
                         <span>SPECIFICATIONS , A INDONESIA</span>
@@ -45,8 +47,8 @@
                     </td>
                 </tr>
                 <tr class="field-values">
-                    <td>{{ $label->product_snapshot['sku'] }}</td>
-                    <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
+                    <td>{{ $label->barcode_value }}</td>
+                    <td>{{ $label->product_snapshot['supplier_code'] ?? '' }}</td>
                 </tr>
             </table>
         </div>
@@ -55,10 +57,10 @@
             <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
             <tr>
                 <td>
-                    <div class="sticker-barcode-canvas">{!! $customerBarcode !!}</div>
+                    <div class="sticker-barcode-canvas">{!! $partBarcode !!}</div>
                 </td>
                 <td>
-                    <div class="sticker-barcode-canvas">{!! $partBarcode !!}</div>
+                    <div class="sticker-barcode-canvas">{!! $catalogBarcode !!}</div>
                 </td>
             </tr>
         </table>

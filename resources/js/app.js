@@ -181,3 +181,70 @@ if (rolePortal) {
     });
     updatePermissionPortal();
 }
+
+const deliveryOrderForm = document.querySelector('[data-delivery-order-form]');
+if (deliveryOrderForm) {
+    const products = JSON.parse(document.querySelector('#deliveryOrderProducts')?.textContent || '[]');
+    const initialItems = JSON.parse(document.querySelector('#deliveryOrderInitialItems')?.textContent || '[]');
+    const rows = document.querySelector('#deliveryOrderItems');
+    const template = document.querySelector('#deliveryOrderItemTemplate');
+    let index = 0;
+
+    const populateProductDetails = row => {
+        const product = products.find(item => String(item.id) === row.querySelector('[data-product]').value);
+        row.querySelector('[data-waf]').textContent = product?.waf_part_no || '-';
+        row.querySelector('[data-customer-part]').textContent = product?.customer_part_no || '-';
+        row.querySelector('[data-catalog]').textContent = product?.catalog_code || '-';
+        if (product) row.querySelector('[data-unit]').value = product.unit || '';
+    };
+    const addItem = item => {
+        const fragment = template.content.cloneNode(true);
+        const row = fragment.querySelector('tr');
+        row.innerHTML = row.innerHTML.replaceAll('__INDEX__', index++);
+        rows.append(row);
+        row.querySelector('[data-product]').value = item?.product_id || '';
+        row.querySelector('input[name$="[quantity]"]').value = item?.quantity || '';
+        row.querySelector('[data-unit]').value = item?.unit || '';
+        row.querySelector('input[name$="[weight]"]').value = item?.weight || '';
+        populateProductDetails(row);
+    };
+    initialItems.forEach(addItem);
+    document.querySelector('#addDeliveryOrderItem')?.addEventListener('click', () => addItem());
+    rows.addEventListener('change', event => {
+        if (event.target.matches('[data-product]')) populateProductDetails(event.target.closest('tr'));
+    });
+    rows.addEventListener('click', event => {
+        const button = event.target.closest('[data-remove-item]');
+        if (!button) return;
+        if (rows.querySelectorAll('tr').length > 1) button.closest('tr').remove();
+    });
+    const bindPartner = (selectId, addressId, phoneId) => {
+        document.querySelector(selectId)?.addEventListener('change', event => {
+            const option = event.target.selectedOptions[0];
+            const address = document.querySelector(addressId);
+            if (address && option?.dataset.address) address.value = option.dataset.address;
+            const phone = phoneId && document.querySelector(phoneId);
+            if (phone && option?.dataset.phone) phone.value = option.dataset.phone;
+        });
+    };
+    bindPartner('#toPartner', '#toAddress');
+    bindPartner('#shipToPartner', '#shipToAddress', '#shipToPhone');
+}
+
+const deliveryOrderBatch = document.querySelector('[data-delivery-order-batch]');
+if (deliveryOrderBatch) {
+    const selectAll = deliveryOrderBatch.querySelector('#selectAllDeliveryOrders');
+    const checkboxes = [...deliveryOrderBatch.querySelectorAll('.delivery-order-checkbox')];
+    const button = deliveryOrderBatch.querySelector('#batchDeliveryOrderButton');
+    const count = deliveryOrderBatch.querySelector('#selectedDeliveryOrderCount');
+    const update = () => {
+        const selected = checkboxes.filter(checkbox => checkbox.checked);
+        selectAll.checked = checkboxes.length > 0 && selected.length === checkboxes.length;
+        selectAll.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
+        button.disabled = selected.length === 0;
+        count.textContent = `${selected.length} DO dipilih`;
+    };
+    selectAll?.addEventListener('change', () => { checkboxes.forEach(checkbox => checkbox.checked = selectAll.checked); update(); });
+    checkboxes.forEach(checkbox => checkbox.addEventListener('change', update));
+    update();
+}

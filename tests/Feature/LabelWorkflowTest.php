@@ -50,13 +50,13 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
-            ->assertSee('WAF No.')
+            ->assertSee('WAF PART NO.')
             ->assertDontSee('Company.')
             ->assertDontSee('Catalog')
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
             ->assertDontSee('DIN')
-            ->assertDontSee('CODE.')
+            ->assertSee('CODE.')
             ->assertDontSee('STOCK INV.')
             ->assertDontSee('ALAMAT PENGIRIM')
             ->assertDontSee('ALAMAT PENERIMA');
@@ -180,22 +180,31 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
-    public function test_label_pdf_uses_reference_black_panel_and_standard_text(): void
+    public function test_label_pdf_uses_reference_yellow_panel_and_standard_text(): void
     {
-        $html = view('labels.pdf', ['pages' => []])->render();
+        $label = new LabelPrint([
+            'purchase_order_no' => 'PO-TEST', 'customer_part_no' => 'CUST-TEST', 'quantity' => 1,
+            'uom' => 'PCS', 'barcode_value' => 'WAF-TEST',
+            'product_snapshot' => ['name' => 'PRODUCT TEST', 'description' => 'SIZE TEST', 'supplier_code' => 'CAT-TEST'],
+        ]);
+        $html = view('labels.pdf', ['pages' => [[
+            'label' => $label, 'partBarcode' => '', 'catalogBarcode' => '', 'logoDataUri' => null,
+        ]]])->render();
 
-        $this->assertStringContainsString('#050505', $html);
-        $this->assertStringContainsString('background: #050505;', $html);
+        $this->assertStringContainsString('#ffc400', $html);
+        $this->assertStringContainsString('background:#ffc400', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.sticker-standard span', $html);
         $this->assertStringNotContainsString('.barcode-title', $html);
         $this->assertStringNotContainsString('Company.', $html);
         $this->assertStringNotContainsString('Catalog', $html);
-        $this->assertStringContainsString('letter-spacing: 1.3pt;', $html);
-        $this->assertStringContainsString('letter-spacing: 1.1pt;', $html);
-        $this->assertStringContainsString('letter-spacing: .33pt;', $html);
-        $this->assertStringContainsString('height: 17mm;', $html);
+        $this->assertStringContainsString('CUST PART NO.', $html);
+        $this->assertStringContainsString('P.O NUMBER.', $html);
+        $this->assertStringContainsString('WAF PART NO.', $html);
+        $this->assertStringContainsString('CODE.', $html);
+        $this->assertStringNotContainsString('customerBarcode', $html);
+        $this->assertStringContainsString('CAT-TEST', $html);
         $this->assertStringNotContainsString('.sticker-din', $html);
         $this->assertStringNotContainsString('.sticker-addresses', $html);
     }

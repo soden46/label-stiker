@@ -150,7 +150,7 @@ class LabelPrintController extends Controller
         return [
             'label' => $labelPrint,
             'partBarcode' => $barcode->html($labelPrint->barcode_value),
-            'customerBarcode' => $barcode->html($labelPrint->customer_part_no),
+            'catalogBarcode' => $barcode->html($labelPrint->product_snapshot['supplier_code'] ?: $labelPrint->barcode_value),
             'logoDataUri' => $branding->dataUriForPath($labelPrint->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
                 ?: $branding->logoDataUri(),

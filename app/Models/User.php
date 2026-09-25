@@ -91,6 +91,8 @@ class User extends Authenticatable
             'inventory.stock_out' => '/stock-keluar',
             'labels.create' => '/labels/create',
             'labels.view' => '/labels',
+            'delivery_orders.create' => '/delivery-orders/create',
+            'delivery_orders.view' => '/delivery-orders',
             'products.view' => '/products',
             'inventory.manage' => '/warehouses',
             'branding.manage' => '/settings',

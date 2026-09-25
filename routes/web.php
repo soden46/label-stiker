@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\LabelPrintController;
 use App\Http\Controllers\LabelSettingController;
@@ -47,6 +48,17 @@ Route::middleware(['auth', 'portal:backoffice'])->group(function () {
     Route::post('/labels/bulk-pdf', [LabelPrintController::class, 'bulkPdf'])->middleware('permission:labels.print')->name('labels.bulk-pdf');
     Route::get('/labels/{labelPrint}', [LabelPrintController::class, 'show'])->middleware('permission:labels.view,labels.create')->name('labels.show');
     Route::get('/labels/{labelPrint}/pdf', [LabelPrintController::class, 'pdf'])->middleware('permission:labels.print')->name('labels.pdf');
+    Route::get('/delivery-orders', [DeliveryOrderController::class, 'index'])->middleware('permission:delivery_orders.view')->name('delivery-orders.index');
+    Route::get('/delivery-orders/create', [DeliveryOrderController::class, 'create'])->middleware('permission:delivery_orders.create')->name('delivery-orders.create');
+    Route::post('/delivery-orders', [DeliveryOrderController::class, 'store'])->middleware('permission:delivery_orders.create')->name('delivery-orders.store');
+    Route::post('/delivery-orders/batch', [DeliveryOrderController::class, 'batch'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch');
+    Route::post('/delivery-orders/batch/pdf', [DeliveryOrderController::class, 'batchPdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch.pdf');
+    Route::post('/delivery-orders/batch/shipping-stickers', [DeliveryOrderController::class, 'batchShippingStickerPdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch.shipping-stickers');
+    Route::get('/delivery-orders/{deliveryOrder}', [DeliveryOrderController::class, 'show'])->middleware('permission:delivery_orders.view,delivery_orders.create')->name('delivery-orders.show');
+    Route::get('/delivery-orders/{deliveryOrder}/edit', [DeliveryOrderController::class, 'edit'])->middleware('permission:delivery_orders.create')->name('delivery-orders.edit');
+    Route::put('/delivery-orders/{deliveryOrder}', [DeliveryOrderController::class, 'update'])->middleware('permission:delivery_orders.create')->name('delivery-orders.update');
+    Route::get('/delivery-orders/{deliveryOrder}/pdf', [DeliveryOrderController::class, 'pdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.pdf');
+    Route::get('/delivery-orders/{deliveryOrder}/shipping-sticker', [DeliveryOrderController::class, 'shippingStickerPdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.shipping-sticker');
     Route::get('/stock-masuk', [StockController::class, 'createIn'])->middleware('permission:inventory.stock_in')->name('stock.in.create');
     Route::post('/stock-masuk', [StockController::class, 'storeIn'])->middleware('permission:inventory.stock_in')->name('stock.in.store');
     Route::get('/stock-keluar', [StockController::class, 'createOut'])->middleware('permission:inventory.stock_out')->name('stock.out.create');

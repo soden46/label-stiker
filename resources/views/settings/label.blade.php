@@ -22,6 +22,18 @@
                 <input name="app_name" value="{{ old('app_name', $appName) }}" maxlength="60" required>
                 <small class="input-hint">Dipakai pada judul browser, halaman login, dan sidebar.</small>
             </div>
+            <div class="delivery-address-grid">
+                <p class="eyebrow">PROFIL PERUSAHAAN</p><h4>Data pengirim untuk Delivery Order</h4>
+                <p class="input-hint">Disimpan di pengaturan aplikasi dan digunakan pada shipping sticker, bukan di-hardcode pada PDF.</p>
+                <div class="form-grid">
+                    <div class="field"><label>Nama perusahaan</label><input name="company_name" value="{{ old('company_name', $companyProfile['name']) }}" maxlength="160"></div>
+                    <div class="field"><label>Telepon</label><input name="company_phone" value="{{ old('company_phone', $companyProfile['phone']) }}" maxlength="80"></div>
+                    <div class="field field-span-2"><label>Alamat</label><textarea name="company_address" rows="3" maxlength="2000">{{ old('company_address', $companyProfile['address']) }}</textarea></div>
+                    <div class="field"><label>Kota</label><input name="company_city" value="{{ old('company_city', $companyProfile['city']) }}" maxlength="100"></div>
+                    <div class="field"><label>Kode pos</label><input name="company_postal_code" value="{{ old('company_postal_code', $companyProfile['postal_code']) }}" maxlength="30"></div>
+                    <div class="field"><label>Negara</label><input name="company_country" value="{{ old('company_country', $companyProfile['country']) }}" maxlength="100"></div>
+                </div>
+            </div>
 
             <div class="settings-assets">
                 <div class="asset-setting">

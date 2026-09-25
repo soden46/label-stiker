@@ -17,6 +17,9 @@ class RbacSeeder extends Seeder
             ['labels.view', 'Lihat Label', 'Label', 'backoffice'],
             ['labels.create', 'Buat Label', 'Label', 'backoffice'],
             ['labels.print', 'Cetak Label', 'Label', 'backoffice'],
+            ['delivery_orders.view', 'Lihat Delivery Order', 'Delivery Order', 'backoffice'],
+            ['delivery_orders.create', 'Buat Delivery Order', 'Delivery Order', 'backoffice'],
+            ['delivery_orders.print', 'Cetak Delivery Order', 'Delivery Order', 'backoffice'],
             ['products.view', 'Lihat Master Part', 'Master Part', 'backoffice'],
             ['products.manage', 'Kelola Master Part', 'Master Part', 'backoffice'],
             ['products.import', 'Import Master Part', 'Master Part', 'backoffice'],
@@ -76,6 +79,7 @@ class RbacSeeder extends Seeder
         $superAdmin->permissions()->sync($permissions->where('portal', 'backoffice')->pluck('id'));
         $operator->permissions()->sync($permissions->only([
             'dashboard.view', 'labels.view', 'labels.create', 'labels.print', 'products.view',
+            'delivery_orders.view', 'delivery_orders.create', 'delivery_orders.print',
         ])->pluck('id'));
         $cashier->permissions()->sync($permissions->only(['pos.access', 'sales.create'])->pluck('id'));
         $inventory->permissions()->sync($permissions->only([
