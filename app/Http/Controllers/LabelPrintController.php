@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLabelPrintRequest;
-use App\Models\AppSetting;
-use App\Models\DeliveryOrder;
 use App\Models\LabelPrint;
 use App\Models\Product;
 use App\Services\BarcodeService;
@@ -65,49 +63,8 @@ class LabelPrintController extends Controller
                 'inventory_stock' => (float) ($product->inventory_stock ?? 0),
             ]);
 
-        $senderAddress = implode("\n", array_filter([
-            AppSetting::value('company_name'),
-            AppSetting::value('company_address'),
-            trim(implode(' ', array_filter([
-                AppSetting::value('company_city'),
-                AppSetting::value('company_postal_code'),
-                AppSetting::value('company_country'),
-            ]))),
-            AppSetting::value('company_phone') ? 'TLP. '.AppSetting::value('company_phone') : null,
-        ]));
-
-        $deliveryOrders = DeliveryOrder::query()
-            ->with('items.product')
-            ->latest('delivery_date')
-            ->latest('id')
-            ->limit(100)
-            ->get()
-            ->map(fn (DeliveryOrder $deliveryOrder) => [
-                'id' => $deliveryOrder->id,
-                'number' => $deliveryOrder->number,
-                'purchase_order_no' => $deliveryOrder->purchase_order_no,
-                'sender_address' => $senderAddress,
-                'recipient_address' => implode("\n", array_filter([
-                    $deliveryOrder->ship_to_company,
-                    $deliveryOrder->ship_to_project_site,
-                    $deliveryOrder->ship_to_address,
-                    $deliveryOrder->ship_to_phone ? 'TLP. '.$deliveryOrder->ship_to_phone : null,
-                ])),
-                'items' => $deliveryOrder->items
-                    ->filter(fn ($item) => $item->product && $item->product->is_active)
-                    ->map(fn ($item) => [
-                        'product_id' => $item->product_id,
-                        'label' => $item->line_number.'. '.$item->item_name.' — '.$item->waf_part_no,
-                        'customer_part_no' => $item->customer_part_no,
-                        'quantity' => (float) $item->quantity,
-                        'uom' => $item->unit,
-                    ])
-                    ->values(),
-            ]);
-
         return view('labels.create', [
             'products' => $products,
-            'deliveryOrders' => $deliveryOrders,
         ]);
     }
 

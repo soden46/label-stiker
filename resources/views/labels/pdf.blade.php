@@ -24,9 +24,9 @@ html, body {
 }
 
 .sticker-page {
-    width: 100mm;
-    min-height: 97mm;
-    padding: 3mm 3mm 0 3mm;
+    /* DomPDF resolves this width before the horizontal padding. */
+    width: 94mm;
+    padding: 2mm 3mm 0 3mm;
 }
 
 .sticker-page + .sticker-page {
@@ -35,13 +35,14 @@ html, body {
 
 .sticker-body {
     width: 94mm;
-    height: 97mm;
+    margin: 0;
     position: relative;
 }
 
 .sticker-panel {
-    width: 94mm;
-    height: 66mm;
+    /* 89 + (2 x 2.5) produces the 94 x 72 mm preview panel in DomPDF. */
+    width: 89mm;
+    height: 67mm;
     padding: 2.5mm;
     background: #050505;
     border-radius: 8mm 8mm 0 0;
@@ -94,7 +95,8 @@ html, body {
     border-left: 2mm solid #050505;
     text-align: left;
     vertical-align: top;
-    height: 18mm;
+    /* DomPDF adds the 2 mm vertical padding to this content height. */
+    height: 14mm;
 }
 
 .sticker-description-label {
@@ -142,8 +144,13 @@ html, body {
     white-space: nowrap;
 }
 
+.field-title-spacer {
+    padding: 0 !important;
+}
+
 .field-values td {
-    height: 15.5mm;
+    /* Keep the rendered row at 16.5 mm after the 1 mm top/bottom padding. */
+    height: 14.5mm;
     padding: 1mm 0.5mm;
     background: #fff;
     border-right: 2.2mm solid #050505;
@@ -164,7 +171,7 @@ html, body {
 }
 
 .sticker-fields-bottom .field-values td {
-    height: 16.5mm;
+    height: 14mm;
 }
 
 .sticker-standard {
@@ -173,37 +180,40 @@ html, body {
     border-right: 0 !important;
     text-align: left !important;
     vertical-align: top !important;
-    padding: 1mm 1.5mm !important;
-    font-size: 4.2pt !important;
-    line-height: 1.15 !important;
-    font-weight: 400 !important;
-    letter-spacing: 0.3pt !important;
+    padding: 1mm 0 1.2mm 1mm !important;
+    font-family: Helvetica, Arial, sans-serif !important;
+    font-size: 5.4pt !important;
+    line-height: 1.1 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.15pt !important;
     white-space: normal !important;
 }
 
 .sticker-standard span {
     display: block;
+    white-space: nowrap;
 }
 
 .sticker-barcodes {
-    width: 89mm;
+    width: 94mm;
     border-collapse: collapse;
     table-layout: fixed;
-    margin-top: 1mm;
+    clear: both;
+    margin-top: 2mm;
+    page-break-inside: avoid;
 }
 
 .sticker-barcodes td {
-    width: 44.5mm;
-    height: 18mm;
-    padding: 0 1mm;
-    vertical-align: middle;
+    height: 21mm;
+    padding: 0 2mm;
+    vertical-align: top;
     text-align: center;
 }
 
 .pdf-barcode {
     display: block;
-    width: 44mm;
-    height: 13mm;
+    width: 42mm;
+    height: 9.3mm;
     margin: 0 auto;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;

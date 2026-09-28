@@ -5,7 +5,7 @@
 @section('heading', 'Buat label barcode')
 
 @section('content')
-<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}" data-delivery-orders="{{ $deliveryOrders->toJson() }}">
+<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}">
     <form method="POST" action="{{ route('labels.store') }}" enctype="multipart/form-data" class="builder-form">
         @csrf
         <div class="builder-intro">
@@ -19,10 +19,6 @@
 
         <section class="form-step">
             <div class="step-heading"><span>01</span><div><p class="eyebrow">MASTER DATA</p><h3>Pilih part (SKU)</h3></div></div>
-            <div class="form-grid">
-                <div class="field"><label for="deliveryOrderSelect">Delivery order <span>opsional</span></label><select id="deliveryOrderSelect"><option value="">Input label manual</option>@foreach($deliveryOrders as $deliveryOrder)<option value="{{ $deliveryOrder['id'] }}">{{ $deliveryOrder['number'] }}{{ $deliveryOrder['purchase_order_no'] ? ' — '.$deliveryOrder['purchase_order_no'] : '' }}</option>@endforeach</select><small class="input-hint">Pilih DO untuk mengisi PO, surat jalan, alamat, dan item secara otomatis.</small></div>
-                <div class="field" id="deliveryOrderItemField" hidden><label for="deliveryOrderItemSelect">Item delivery order</label><select id="deliveryOrderItemSelect" disabled><option value="">Pilih item</option></select><small class="input-hint">Qty, satuan, dan customer part no. mengikuti item DO.</small></div>
-            </div>
             <div class="product-picker">
                 <span class="search-icon">⌕</span>
                 <input type="search" id="productSearch" autocomplete="off" placeholder="Cari nama part, WAF part no., customer part, atau kode...">

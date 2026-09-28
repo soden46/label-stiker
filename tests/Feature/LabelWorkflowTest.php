@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\AppSetting;
-use App\Models\BusinessPartner;
-use App\Models\DeliveryOrder;
 use App\Models\LabelPrint;
 use App\Models\Permission;
 use App\Models\Product;
@@ -63,69 +60,13 @@ class LabelWorkflowTest extends TestCase
             ->assertDontSee('Catalog')
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
+            ->assertDontSee('DELIVERY ORDER OPSIONAL')
+            ->assertDontSee('deliveryOrderSelect', false)
             ->assertDontSee('DIN')
             ->assertDontSee('CODE.')
             ->assertDontSee('STOCK INV.')
             ->assertDontSee('ALAMAT PENGIRIM')
             ->assertDontSee('ALAMAT PENERIMA');
-    }
-
-    public function test_label_form_can_prefill_data_from_a_delivery_order_item(): void
-    {
-        $user = User::factory()->create();
-        $product = Product::create([
-            'sku' => 'DO-LABEL-001',
-            'name' => 'DO LABEL PART',
-            'description' => 'PART DARI DELIVERY ORDER',
-            'customer_part_no' => 'MASTER-CUST-001',
-            'barcode_value' => 'DO-LABEL-001',
-            'uom' => 'PCS',
-        ]);
-        $to = BusinessPartner::create(['code' => 'TO-001', 'name' => 'PT Tujuan', 'is_customer' => true, 'is_active' => true, 'address' => 'Alamat Tujuan']);
-        $shipTo = BusinessPartner::create(['code' => 'SHIP-001', 'name' => 'PT Penerima', 'is_customer' => true, 'is_active' => true, 'address' => 'Alamat Penerima', 'phone' => '021-123']);
-        AppSetting::put('company_name', 'PT WAF Indonesia');
-        AppSetting::put('company_address', 'Alamat Pengirim');
-
-        $deliveryOrder = DeliveryOrder::create([
-            'uuid' => 'f080936d-b093-4ea6-9684-29e10ae1da00',
-            'number' => 'DO.2026.09.001',
-            'delivery_date' => '2026-09-28',
-            'to_partner_id' => $to->id,
-            'ship_to_partner_id' => $shipTo->id,
-            'to_company' => $to->name,
-            'to_address' => $to->address,
-            'ship_to_company' => $shipTo->name,
-            'ship_to_project_site' => 'Site Penerima',
-            'ship_to_address' => $shipTo->address,
-            'ship_to_phone' => $shipTo->phone,
-            'purchase_order_no' => 'PO-DO-001',
-        ]);
-        $deliveryOrder->items()->create([
-            'product_id' => $product->id,
-            'line_number' => 1,
-            'item_name' => $product->name,
-            'waf_part_no' => $product->sku,
-            'customer_part_no' => 'DO-CUST-001',
-            'quantity' => 12,
-            'unit' => 'PCS',
-        ]);
-
-        $this->actingAs($user)->get(route('labels.create'))
-            ->assertOk()
-            ->assertSee('data-delivery-orders', false)
-            ->assertSee('deliveryOrderItemSelect', false)
-            ->assertSee('DO.2026.09.001')
-            ->assertViewHas('deliveryOrders', function ($orders) use ($deliveryOrder) {
-                $order = $orders->firstWhere('id', $deliveryOrder->id);
-
-                return $order
-                    && $order['purchase_order_no'] === 'PO-DO-001'
-                    && $order['sender_address'] === "PT WAF Indonesia\nAlamat Pengirim"
-                    && $order['recipient_address'] === "PT Penerima\nSite Penerima\nAlamat Penerima\nTLP. 021-123"
-                    && $order['items'][0]['product_id'] === $deliveryOrder->items->first()->product_id
-                    && $order['items'][0]['customer_part_no'] === 'DO-CUST-001'
-                    && $order['items'][0]['quantity'] === 12.0;
-            });
     }
 
     public function test_admin_can_generate_and_view_a_label_pdf(): void
@@ -279,6 +220,17 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.sticker-standard span', $html);
+        $this->assertStringContainsString('class="field-title-spacer"', $html);
+        $this->assertStringContainsString('<td class="sticker-standard">', $html);
+        $this->assertStringNotContainsString('rowspan="2"', $html);
+        $this->assertStringContainsString('<col style="width:43%"><col style="width:24%"><col style="width:33%">', $html);
+        $this->assertStringContainsString('height: 14.5mm', $html);
+        $this->assertStringContainsString('white-space: nowrap;', $html);
+        $this->assertStringContainsString('clear: both;', $html);
+        $this->assertStringContainsString('margin-top: 2mm;', $html);
+        $this->assertStringContainsString('height: 18mm;', $html);
+        $this->assertStringContainsString('width: 42mm;', $html);
+        $this->assertStringContainsString('font-size: 5.4pt !important;', $html);
         $this->assertStringNotContainsString('.barcode-title', $html);
         $this->assertStringNotContainsString('Company.', $html);
         $this->assertStringNotContainsString('Catalog', $html);

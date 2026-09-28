@@ -33,20 +33,21 @@
             </table>
 
             <table class="sticker-fields sticker-fields-bottom" role="presentation">
-                <colgroup><col style="width:45%"><col style="width:25%"><col style="width:30%"></colgroup>
+                <colgroup><col style="width:43%"><col style="width:24%"><col style="width:33%"></colgroup>
                 <tr class="field-titles">
                     <td>WAF NO.</td>
                     <td>QTY.</td>
-                    <td class="sticker-standard" rowspan="2">
+                    <td class="field-title-spacer"></td>
+                </tr>
+                <tr class="field-values">
+                    <td>{{ $label->barcode_value }}</td>
+                    <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
+                    <td class="sticker-standard">
                         <span>MANUFACTURED TO WAF</span>
                         <span>SPECIFICATIONS , A INDONESIA</span>
                         <span>REGISTERED TRADEMARK</span>
                         <span>ISO 9001 2015 CERTIFIED</span>
                     </td>
-                </tr>
-                <tr class="field-values">
-                    <td>{{ $label->barcode_value }}</td>
-                    <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
                 </tr>
             </table>
         </div>

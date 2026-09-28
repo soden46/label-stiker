@@ -29,7 +29,7 @@ class BarcodeService
         return (new HtmlRenderer)->render($barcode, 160, 35);
     }
 
-    public function pdfDataUri(string $value, float $widthMm = 44, float $heightMm = 14): string
+    public function pdfDataUri(string $value, float $widthMm = 42, float $heightMm = 9.3): string
     {
         $widthPx = $widthMm * 3.7795275591;
         $heightPx = $heightMm * 3.7795275591;
