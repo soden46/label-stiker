@@ -106,6 +106,17 @@ class DeliveryOrderWorkflowTest extends TestCase
         ]);
     }
 
+    public function test_delivery_order_pdf_templates_use_black_accents(): void
+    {
+        foreach (['delivery-orders/pdf.blade.php', 'delivery-orders/batch-pdf.blade.php'] as $template) {
+            $html = file_get_contents(resource_path('views/'.$template));
+
+            $this->assertStringNotContainsString('#ffc400', $html);
+            $this->assertStringContainsString('background:#050505', $html);
+            $this->assertStringContainsString('color:#fff', $html);
+        }
+    }
+
     /** @return array{0: BusinessPartner, 1: BusinessPartner} */
     private function customers(): array
     {

@@ -180,7 +180,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
-    public function test_label_pdf_uses_reference_yellow_panel_and_standard_text(): void
+    public function test_label_pdf_uses_black_panel_and_standard_text(): void
     {
         $label = new LabelPrint([
             'purchase_order_no' => 'PO-TEST', 'customer_part_no' => 'CUST-TEST', 'quantity' => 1,
@@ -191,8 +191,9 @@ class LabelWorkflowTest extends TestCase
             'label' => $label, 'partBarcode' => '', 'catalogBarcode' => '', 'logoDataUri' => null,
         ]]])->render();
 
-        $this->assertStringContainsString('#ffc400', $html);
-        $this->assertStringContainsString('background:#ffc400', $html);
+        $this->assertStringNotContainsString('#ffc400', $html);
+        $this->assertStringContainsString('background:#050505', $html);
+        $this->assertStringContainsString('color:#fff', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.sticker-standard span', $html);
