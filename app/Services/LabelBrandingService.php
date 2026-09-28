@@ -24,15 +24,19 @@ class LabelBrandingService
 
     public function publicLabelLogoDataUri(): ?string
     {
-        $path = public_path('logo.png');
+        foreach (['logo.jpeg', 'logo.png'] as $filename) {
+            $path = public_path($filename);
 
-        if (! is_file($path)) {
-            return null;
+            if (! is_file($path)) {
+                continue;
+            }
+
+            $mime = mime_content_type($path) ?: 'image/png';
+
+            return 'data:'.$mime.';base64,'.base64_encode(file_get_contents($path));
         }
 
-        $mime = mime_content_type($path) ?: 'image/png';
-
-        return 'data:'.$mime.';base64,'.base64_encode(file_get_contents($path));
+        return null;
     }
 
     public function faviconPath(): ?string

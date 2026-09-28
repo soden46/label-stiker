@@ -7,6 +7,7 @@ menuButton?.addEventListener('click', () => sidebar?.classList.toggle('open'));
 const builder = document.querySelector('[data-label-builder]');
 if (builder) {
     const products = JSON.parse(builder.dataset.products || '[]');
+    const deliveryOrders = JSON.parse(builder.dataset.deliveryOrders || '[]');
     const search = document.querySelector('#productSearch');
     const results = document.querySelector('#productResults');
     const productId = document.querySelector('#productId');
@@ -15,6 +16,9 @@ if (builder) {
     const clear = document.querySelector('#clearProduct');
     const emptyPreview = document.querySelector('#emptyPreview');
     const preview = document.querySelector('#previewContent');
+    const deliveryOrderSelect = document.querySelector('#deliveryOrderSelect');
+    const deliveryOrderItemField = document.querySelector('#deliveryOrderItemField');
+    const deliveryOrderItemSelect = document.querySelector('#deliveryOrderItemSelect');
 
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
     const formatQuantity = value => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 4 }).format(Number(value || 0));
@@ -31,7 +35,9 @@ if (builder) {
         results.classList.add('open');
     };
 
-    const choose = product => {
+    const choose = (product, deliveryOrderItem = null) => {
+        const customerPartNo = deliveryOrderItem?.customer_part_no || product.customer_part_no || '';
+
         productId.value = product.id;
         search.value = `${product.name} - ${product.sku}`;
         results.classList.remove('open');
@@ -39,18 +45,58 @@ if (builder) {
         selected.hidden = false;
         document.querySelector('#selectedName').textContent = product.name;
         document.querySelector('#selectedMeta').textContent = `${product.sku} · ${product.description || 'Tanpa deskripsi'} · Stok ${formatQuantity(product.inventory_stock)} ${product.uom || 'PCS'}`;
-        document.querySelector('#customerPart').value = product.customer_part_no || '';
-        document.querySelector('#uom').value = product.uom || 'PCS';
-        document.querySelector('#previewName').textContent = product.name;
+        document.querySelector('#customerPart').value = customerPartNo;
+        document.querySelector('#uom').value = deliveryOrderItem?.uom || product.uom || 'PCS';
+        if (deliveryOrderItem) document.querySelector('#quantity').value = deliveryOrderItem.quantity;
         document.querySelector('#previewDesc').textContent = product.description || emptyText;
-        document.querySelector('#previewCustomer').textContent = product.customer_part_no || emptyText;
+        document.querySelector('#previewCustomer').textContent = customerPartNo || emptyText;
         document.querySelector('#previewSku').textContent = product.sku;
-        document.querySelector('#previewCode') && (document.querySelector('#previewCode').textContent = product.supplier_code || emptyText);
         updatePreviewQty();
         emptyPreview.hidden = true;
         preview.hidden = false;
         generate.disabled = false;
     };
+
+    const resetDeliveryOrderItems = () => {
+        deliveryOrderItemField.hidden = true;
+        deliveryOrderItemSelect.disabled = true;
+        deliveryOrderItemSelect.innerHTML = '<option value="">Pilih item</option>';
+    };
+
+    const chooseDeliveryOrderItem = () => {
+        const deliveryOrder = deliveryOrders.find(order => String(order.id) === deliveryOrderSelect.value);
+        const item = deliveryOrder?.items[Number(deliveryOrderItemSelect.value)];
+        const product = products.find(candidate => Number(candidate.id) === Number(item?.product_id));
+
+        if (item && product) choose(product, item);
+    };
+
+    deliveryOrderSelect.addEventListener('change', () => {
+        const deliveryOrder = deliveryOrders.find(order => String(order.id) === deliveryOrderSelect.value);
+
+        if (!deliveryOrder) {
+            resetDeliveryOrderItems();
+
+            return;
+        }
+
+        document.querySelector('#purchaseOrder').value = deliveryOrder.purchase_order_no || '';
+        document.querySelector('#deliveryNote').value = deliveryOrder.number;
+        document.querySelector('#senderAddress').value = deliveryOrder.sender_address || '';
+        document.querySelector('#recipientAddress').value = deliveryOrder.recipient_address || '';
+        document.querySelector('#previewPo').textContent = deliveryOrder.purchase_order_no || emptyText;
+        deliveryOrderItemField.hidden = false;
+        deliveryOrderItemSelect.disabled = deliveryOrder.items.length === 0;
+        deliveryOrderItemSelect.innerHTML = deliveryOrder.items.length
+            ? `<option value="">Pilih item DO</option>${deliveryOrder.items.map((item, index) => `<option value="${index}">${escapeHtml(item.label)}</option>`).join('')}`
+            : '<option value="">Tidak ada item aktif pada DO ini</option>';
+
+        if (deliveryOrder.items.length === 1) {
+            deliveryOrderItemSelect.value = '0';
+            chooseDeliveryOrderItem();
+        }
+    });
+    deliveryOrderItemSelect.addEventListener('change', chooseDeliveryOrderItem);
 
     search.addEventListener('focus', () => renderResults(search.value));
     search.addEventListener('input', () => { productId.value = ''; generate.disabled = true; renderResults(search.value); });

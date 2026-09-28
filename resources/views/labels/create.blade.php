@@ -5,7 +5,7 @@
 @section('heading', 'Buat label barcode')
 
 @section('content')
-<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}">
+<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}" data-delivery-orders="{{ $deliveryOrders->toJson() }}">
     <form method="POST" action="{{ route('labels.store') }}" enctype="multipart/form-data" class="builder-form">
         @csrf
         <div class="builder-intro">
@@ -19,6 +19,10 @@
 
         <section class="form-step">
             <div class="step-heading"><span>01</span><div><p class="eyebrow">MASTER DATA</p><h3>Pilih part (SKU)</h3></div></div>
+            <div class="form-grid">
+                <div class="field"><label for="deliveryOrderSelect">Delivery order <span>opsional</span></label><select id="deliveryOrderSelect"><option value="">Input label manual</option>@foreach($deliveryOrders as $deliveryOrder)<option value="{{ $deliveryOrder['id'] }}">{{ $deliveryOrder['number'] }}{{ $deliveryOrder['purchase_order_no'] ? ' — '.$deliveryOrder['purchase_order_no'] : '' }}</option>@endforeach</select><small class="input-hint">Pilih DO untuk mengisi PO, surat jalan, alamat, dan item secara otomatis.</small></div>
+                <div class="field" id="deliveryOrderItemField" hidden><label for="deliveryOrderItemSelect">Item delivery order</label><select id="deliveryOrderItemSelect" disabled><option value="">Pilih item</option></select><small class="input-hint">Qty, satuan, dan customer part no. mengikuti item DO.</small></div>
+            </div>
             <div class="product-picker">
                 <span class="search-icon">⌕</span>
                 <input type="search" id="productSearch" autocomplete="off" placeholder="Cari nama part, WAF part no., customer part, atau kode...">
@@ -61,11 +65,11 @@
         <div class="empty-preview" id="emptyPreview"><div class="barcode-placeholder">|||| ||| || ||||</div><strong>Label menunggu data</strong><p>Pilih part untuk melihat gambaran label.</p></div>
         <div class="preview-content" id="previewContent" hidden>
             <div class="preview-yellow">
-                <div class="preview-head"><div class="preview-logo"><img src="{{ asset('logo.png') }}" alt="WAF Spare Parts"></div><div class="preview-title"><strong id="previewName">-</strong><small id="previewDesc">-</small></div></div>
-                <div class="preview-cells preview-cells-top"><span><small>CUST PART NO.</small><b id="previewCustomer">-</b></span><span><small>P.O NUMBER.</small><b id="previewPo">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span></div>
-                <div class="preview-cells preview-cells-bottom"><span><small>WAF PART NO.</small><b id="previewSku">-</b></span><span><small>CODE.</small><b id="previewCode">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
+                <div class="preview-head"><div class="preview-logo"><img src="{{ asset('logo.jpeg') }}" alt="WAF Spare Parts"></div><div class="preview-title"><small>Description.</small><strong id="previewDesc">-</strong></div></div>
+                <div class="preview-cells preview-cells-top"><span><small>CUST NO.</small><b id="previewCustomer">-</b></span><span><small>P.O NO.</small><b id="previewPo">-</b></span></div>
+                <div class="preview-cells preview-cells-bottom"><span><small>WAF NO.</small><b id="previewSku">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
             </div>
-            <div class="fake-barcode"><b>||||| || ||| ||||| | |||| || |||</b></div>
+            <div class="fake-barcode"><div class="preview-barcode-row"><b>||||| || ||| |||||</b><b>|||| ||||| || ||||</b></div></div>
         </div>
         <ul class="preview-tips"><li><span>✓</span> Code 128 mudah dibaca scanner kasir</li><li><span>✓</span> Data part dan stok inventory dibekukan saat label dibuat</li><li><span>✓</span> Halaman PDF native 100 x 100 mm</li></ul>
     </aside>

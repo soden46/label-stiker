@@ -8,7 +8,7 @@
 <div class="label-result-layout">
     <section class="result-stage">
         <div class="ruler ruler-top"><span>10 × 10 cm</span></div>
-        @include('labels._label')
+        @include('labels._label', ['isPdf' => true, 'isResult' => true])
     </section>
     <aside class="result-sidebar">
         <span class="success-orb">✓</span>

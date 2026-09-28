@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\AppSetting;
+use App\Models\BusinessPartner;
+use App\Models\DeliveryOrder;
 use App\Models\LabelPrint;
 use App\Models\Permission;
 use App\Models\Product;
@@ -9,6 +12,7 @@ use App\Models\Role;
 use App\Models\StockBalance;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Services\LabelBrandingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -50,16 +54,78 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
-            ->assertSee('WAF PART NO.')
+            ->assertSee('Description.')
+            ->assertSee('CUST NO.')
+            ->assertSee('P.O NO.')
+            ->assertSee('WAF NO.')
+            ->assertSee('QTY.')
             ->assertDontSee('Company.')
             ->assertDontSee('Catalog')
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
             ->assertDontSee('DIN')
-            ->assertSee('CODE.')
+            ->assertDontSee('CODE.')
             ->assertDontSee('STOCK INV.')
             ->assertDontSee('ALAMAT PENGIRIM')
             ->assertDontSee('ALAMAT PENERIMA');
+    }
+
+    public function test_label_form_can_prefill_data_from_a_delivery_order_item(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::create([
+            'sku' => 'DO-LABEL-001',
+            'name' => 'DO LABEL PART',
+            'description' => 'PART DARI DELIVERY ORDER',
+            'customer_part_no' => 'MASTER-CUST-001',
+            'barcode_value' => 'DO-LABEL-001',
+            'uom' => 'PCS',
+        ]);
+        $to = BusinessPartner::create(['code' => 'TO-001', 'name' => 'PT Tujuan', 'is_customer' => true, 'is_active' => true, 'address' => 'Alamat Tujuan']);
+        $shipTo = BusinessPartner::create(['code' => 'SHIP-001', 'name' => 'PT Penerima', 'is_customer' => true, 'is_active' => true, 'address' => 'Alamat Penerima', 'phone' => '021-123']);
+        AppSetting::put('company_name', 'PT WAF Indonesia');
+        AppSetting::put('company_address', 'Alamat Pengirim');
+
+        $deliveryOrder = DeliveryOrder::create([
+            'uuid' => 'f080936d-b093-4ea6-9684-29e10ae1da00',
+            'number' => 'DO.2026.09.001',
+            'delivery_date' => '2026-09-28',
+            'to_partner_id' => $to->id,
+            'ship_to_partner_id' => $shipTo->id,
+            'to_company' => $to->name,
+            'to_address' => $to->address,
+            'ship_to_company' => $shipTo->name,
+            'ship_to_project_site' => 'Site Penerima',
+            'ship_to_address' => $shipTo->address,
+            'ship_to_phone' => $shipTo->phone,
+            'purchase_order_no' => 'PO-DO-001',
+        ]);
+        $deliveryOrder->items()->create([
+            'product_id' => $product->id,
+            'line_number' => 1,
+            'item_name' => $product->name,
+            'waf_part_no' => $product->sku,
+            'customer_part_no' => 'DO-CUST-001',
+            'quantity' => 12,
+            'unit' => 'PCS',
+        ]);
+
+        $this->actingAs($user)->get(route('labels.create'))
+            ->assertOk()
+            ->assertSee('data-delivery-orders', false)
+            ->assertSee('deliveryOrderItemSelect', false)
+            ->assertSee('DO.2026.09.001')
+            ->assertViewHas('deliveryOrders', function ($orders) use ($deliveryOrder) {
+                $order = $orders->firstWhere('id', $deliveryOrder->id);
+
+                return $order
+                    && $order['purchase_order_no'] === 'PO-DO-001'
+                    && $order['sender_address'] === "PT WAF Indonesia\nAlamat Pengirim"
+                    && $order['recipient_address'] === "PT Penerima\nSite Penerima\nAlamat Penerima\nTLP. 021-123"
+                    && $order['items'][0]['product_id'] === $deliveryOrder->items->first()->product_id
+                    && $order['items'][0]['customer_part_no'] === 'DO-CUST-001'
+                    && $order['items'][0]['quantity'] === 12.0;
+            });
     }
 
     public function test_admin_can_generate_and_view_a_label_pdf(): void
@@ -96,6 +162,15 @@ class LabelWorkflowTest extends TestCase
         $this->assertSame('125.0000', $label->inventory_stock);
         $this->assertSame('PT WAF Indonesia, Bekasi', $label->sender_address);
         $this->assertSame('PT Customer, Jakarta', $label->recipient_address);
+
+        $this->actingAs($user)->get(route('labels.show', $label))
+            ->assertOk()
+            ->assertSee('is-result-label')
+            ->assertSee('CUST NO.')
+            ->assertSee('P.O NO.')
+            ->assertSee('WAF NO.')
+            ->assertSee('QTY.')
+            ->assertDontSee('CODE.');
 
         $this->actingAs($user)->get(route('labels.pdf', $label))
             ->assertOk()
@@ -188,26 +263,45 @@ class LabelWorkflowTest extends TestCase
             'product_snapshot' => ['name' => 'PRODUCT TEST', 'description' => 'SIZE TEST', 'supplier_code' => 'CAT-TEST'],
         ]);
         $html = view('labels.pdf', ['pages' => [[
-            'label' => $label, 'partBarcode' => '', 'catalogBarcode' => '', 'logoDataUri' => null,
+            'label' => $label,
+            'partBarcodeDataUri' => '',
+            'catalogBarcodeDataUri' => '',
+            'logoDataUri' => null,
         ]]])->render();
 
         $this->assertStringNotContainsString('#ffc400', $html);
-        $this->assertStringContainsString('background:#050505', $html);
-        $this->assertStringContainsString('color:#fff', $html);
+        $this->assertStringContainsString('background: #050505', $html);
+        $this->assertStringContainsString('color: #fff', $html);
+        $this->assertStringNotContainsString('#2b5a9e', $html);
+        $this->assertStringContainsString('border-radius: 8mm 8mm 0 0', $html);
+        $this->assertStringContainsString('border: 0.35mm solid #050505', $html);
+        $this->assertStringContainsString('Description.', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.sticker-standard span', $html);
         $this->assertStringNotContainsString('.barcode-title', $html);
         $this->assertStringNotContainsString('Company.', $html);
         $this->assertStringNotContainsString('Catalog', $html);
-        $this->assertStringContainsString('CUST PART NO.', $html);
-        $this->assertStringContainsString('P.O NUMBER.', $html);
-        $this->assertStringContainsString('WAF PART NO.', $html);
-        $this->assertStringContainsString('CODE.', $html);
+        $this->assertStringContainsString('CUST NO.', $html);
+        $this->assertStringContainsString('P.O NO.', $html);
+        $this->assertStringContainsString('WAF NO.', $html);
+        $this->assertStringContainsString('QTY.', $html);
+        $this->assertStringNotContainsString('CODE.', $html);
         $this->assertStringNotContainsString('customerBarcode', $html);
-        $this->assertStringContainsString('CAT-TEST', $html);
+        $this->assertStringNotContainsString('CAT-TEST', $html);
         $this->assertStringNotContainsString('.sticker-din', $html);
         $this->assertStringNotContainsString('.sticker-addresses', $html);
+    }
+
+    public function test_label_uses_the_whatsapp_logo_asset(): void
+    {
+        $logo = app(LabelBrandingService::class)->publicLabelLogoDataUri();
+
+        $this->assertNotNull($logo);
+        $this->assertStringStartsWith('data:image/jpeg;base64,', $logo);
+        $this->actingAs(User::factory()->create())->get(route('labels.create'))
+            ->assertOk()
+            ->assertSee('logo.jpeg');
     }
 
     public function test_create_label_product_payload_shows_inventory_without_price(): void
