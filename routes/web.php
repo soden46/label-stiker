@@ -51,6 +51,7 @@ Route::middleware(['auth', 'portal:backoffice'])->group(function () {
     Route::get('/delivery-orders', [DeliveryOrderController::class, 'index'])->middleware('permission:delivery_orders.view')->name('delivery-orders.index');
     Route::get('/delivery-orders/create', [DeliveryOrderController::class, 'create'])->middleware('permission:delivery_orders.create')->name('delivery-orders.create');
     Route::post('/delivery-orders', [DeliveryOrderController::class, 'store'])->middleware('permission:delivery_orders.create')->name('delivery-orders.store');
+    Route::post('/delivery-orders/customers', [DeliveryOrderController::class, 'storeCustomer'])->middleware('permission:delivery_orders.create')->name('delivery-orders.customers.store');
     Route::post('/delivery-orders/batch', [DeliveryOrderController::class, 'batch'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch');
     Route::post('/delivery-orders/batch/pdf', [DeliveryOrderController::class, 'batchPdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch.pdf');
     Route::post('/delivery-orders/batch/shipping-stickers', [DeliveryOrderController::class, 'batchShippingStickerPdf'])->middleware('permission:delivery_orders.print')->name('delivery-orders.batch.shipping-stickers');

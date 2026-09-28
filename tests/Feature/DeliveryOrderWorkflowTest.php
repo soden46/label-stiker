@@ -80,6 +80,32 @@ class DeliveryOrderWorkflowTest extends TestCase
         $this->assertPdfPageCount($batchStickersPdf->getContent(), 2);
     }
 
+    public function test_user_can_add_a_customer_from_the_delivery_order_form(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get(route('delivery-orders.create'))
+            ->assertOk()
+            ->assertSee('value="__add_customer__"', false)
+            ->assertSee('Tambah customer…')
+            ->assertSee('data-add-customer', false);
+
+        $response = $this->actingAs($user)->postJson(route('delivery-orders.customers.store'), [
+            'name' => 'PT Customer Baru',
+            'address' => 'Alamat Customer Baru',
+            'phone' => '021-333',
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('customer.name', 'PT Customer Baru')
+            ->assertJsonPath('customer.address', 'Alamat Customer Baru');
+        $this->assertDatabaseHas('business_partners', [
+            'name' => 'PT Customer Baru',
+            'is_customer' => true,
+            'is_active' => true,
+        ]);
+    }
+
     /** @return array{0: BusinessPartner, 1: BusinessPartner} */
     private function customers(): array
     {

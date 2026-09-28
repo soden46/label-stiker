@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Services\LabelBrandingService;
 use App\Services\NumberSequenceService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -98,6 +99,31 @@ class DeliveryOrderController extends Controller
         });
 
         return redirect()->route('delivery-orders.show', $deliveryOrder)->with('success', 'Delivery Order berhasil diperbarui.');
+    }
+
+    public function storeCustomer(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:160'],
+            'address' => ['nullable', 'string', 'max:2000'],
+            'phone' => ['nullable', 'string', 'max:40'],
+        ]);
+
+        do {
+            $code = 'CUST-'.strtoupper(Str::random(12));
+        } while (BusinessPartner::withTrashed()->where('code', $code)->exists());
+
+        $customer = BusinessPartner::create([
+            ...$data,
+            'code' => $code,
+            'is_customer' => true,
+            'is_supplier' => false,
+            'is_active' => true,
+        ]);
+
+        return response()->json([
+            'customer' => $customer->only(['id', 'code', 'name', 'address', 'phone']),
+        ], 201);
     }
 
     public function pdf(DeliveryOrder $deliveryOrder, LabelBrandingService $branding)

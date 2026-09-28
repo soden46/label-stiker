@@ -218,8 +218,28 @@ if (deliveryOrderForm) {
         if (!button) return;
         if (rows.querySelectorAll('tr').length > 1) button.closest('tr').remove();
     });
+    const customerDialog = document.querySelector('#customerDialog');
+    const customerForm = document.querySelector('#customerForm');
+    const customerError = document.querySelector('#customerFormError');
+    let customerTarget;
+    const openCustomerDialog = target => {
+        customerTarget = target;
+        customerError.hidden = true;
+        customerForm.reset();
+        customerDialog.showModal();
+        document.querySelector('#customerName').focus();
+    };
     const bindPartner = (selectId, addressId, phoneId) => {
-        document.querySelector(selectId)?.addEventListener('change', event => {
+        const select = document.querySelector(selectId);
+        if (!select) return;
+        select.dataset.lastValue = select.value;
+        select.addEventListener('change', event => {
+            if (event.target.value === '__add_customer__') {
+                event.target.value = event.target.dataset.lastValue;
+                openCustomerDialog(event.target);
+                return;
+            }
+            event.target.dataset.lastValue = event.target.value;
             const option = event.target.selectedOptions[0];
             const address = document.querySelector(addressId);
             if (address && option?.dataset.address) address.value = option.dataset.address;
@@ -229,6 +249,39 @@ if (deliveryOrderForm) {
     };
     bindPartner('#toPartner', '#toAddress');
     bindPartner('#shipToPartner', '#shipToAddress', '#shipToPhone');
+
+    document.querySelectorAll('[data-add-customer]').forEach(button => button.addEventListener('click', () => {
+        openCustomerDialog(document.querySelector(button.dataset.customerTarget));
+    }));
+    document.querySelectorAll('#closeCustomerDialog, #cancelCustomerDialog').forEach(button => button.addEventListener('click', () => customerDialog.close()));
+    customerForm?.addEventListener('submit', async event => {
+        event.preventDefault();
+        const response = await fetch(customerForm.dataset.customerStoreUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            },
+            body: JSON.stringify(Object.fromEntries(new FormData(customerForm))),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+            customerError.textContent = Object.values(payload.errors || {}).flat().join(' ') || 'Customer tidak dapat disimpan.';
+            customerError.hidden = false;
+            return;
+        }
+        const customer = payload.customer;
+        document.querySelectorAll('#toPartner, #shipToPartner').forEach(select => {
+            const option = new Option(`${customer.code} — ${customer.name}`, customer.id, false, select === customerTarget);
+            option.dataset.address = customer.address || '';
+            option.dataset.phone = customer.phone || '';
+            select.add(option);
+        });
+        customerTarget.dataset.lastValue = String(customer.id);
+        customerTarget?.dispatchEvent(new Event('change'));
+        customerDialog.close();
+    });
 }
 
 const deliveryOrderBatch = document.querySelector('[data-delivery-order-batch]');
