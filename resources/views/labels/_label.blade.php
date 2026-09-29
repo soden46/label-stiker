@@ -13,7 +13,7 @@
                     </td>
                     <td class="sticker-description">
                         @if($isPdf ?? false)
-                            <span class="sticker-description-label">Description.</span>
+                            <span class="sticker-description-label">DESCRIPTION.</span>
                             <strong class="{{ mb_strlen($label->product_snapshot['description'] ?? $label->product_snapshot['name'] ?? '') > 24 ? 'is-long' : '' }}">
                                 {{ $label->product_snapshot['description'] ?? $label->product_snapshot['name'] ?? '-' }}
                             </strong>

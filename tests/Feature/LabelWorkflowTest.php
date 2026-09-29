@@ -51,7 +51,7 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
-            ->assertSee('Description.')
+            ->assertSee('DESCRIPTION.')
             ->assertSee('CUST NO.')
             ->assertSee('P.O NO.')
             ->assertSee('WAF NO.')
@@ -220,7 +220,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertGreaterThanOrEqual(3, substr_count($html, 'font-family: Helvetica, Arial, sans-serif;'));
         $this->assertStringNotContainsString('#2b5a9e', $html);
         $this->assertStringContainsString('border-radius: 6mm 6mm 0 0', $html);
-        $this->assertStringContainsString('Description.', $html);
+        $this->assertStringContainsString('DESCRIPTION.', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('border-spacing: 1.5mm 0;', $html);
         $this->assertStringContainsString('<col style="width:25.5%"><col style="width:74.5%">', $html);
@@ -233,7 +233,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('.barcode-standard', $html);
         $this->assertStringContainsString('.barcode-standard span', $html);
         $this->assertStringContainsString('font-size: 10pt;', $html);
-        $this->assertStringContainsString('line-height: 0.9;', $html);
+        $this->assertStringContainsString('line-height: 1.1;', $html);
         $this->assertStringContainsString('width: 125%;', $html);
         $this->assertStringContainsString('transform: scaleX(0.8);', $html);
         $this->assertStringNotContainsString('class="field-title-spacer"', $html);

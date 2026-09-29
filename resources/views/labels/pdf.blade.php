@@ -119,7 +119,7 @@ html, body {
 .sticker-description-label {
     display: block;
             font-family: Helvetica, Arial, sans-serif;
-    font-size: 6.5pt;
+    font-size: 7.5pt;
     line-height: 1;
     font-weight: 700;
     letter-spacing: 0.9pt;
@@ -158,7 +158,7 @@ html, body {
     background: #ffc400;
     color: #050505;
             font-family: Helvetica, Arial, sans-serif;
-    font-size: 6.5pt;
+    font-size: 7.5pt;
     font-weight: 700;
     letter-spacing: 0.5pt;
     text-align: right;
@@ -185,11 +185,12 @@ html, body {
 
 .barcode-standard {
     width: 100%;
+    height: 15mm;
     margin: 0;
     color: #050505;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 9pt;
-    line-height: 0.9;
+    line-height: 1.1;
     font-weight: 700;
     letter-spacing: -0.1pt;
     text-align: left;

@@ -61,7 +61,7 @@
         <div class="empty-preview" id="emptyPreview"><div class="barcode-placeholder">|||| ||| || ||||</div><strong>Label menunggu data</strong><p>Pilih part untuk melihat gambaran label.</p></div>
         <div class="preview-content" id="previewContent" hidden>
             <div class="preview-yellow">
-                <div class="preview-head"><div class="preview-logo"><img src="{{ asset('logo.jpeg') }}" alt="WAF Spare Parts"></div><div class="preview-title"><small>Description.</small><strong id="previewDesc">-</strong></div></div>
+                <div class="preview-head"><div class="preview-logo"><img src="{{ asset('logo.jpeg') }}" alt="WAF Spare Parts"></div><div class="preview-title"><small>DESCRIPTION.</small><strong id="previewDesc">-</strong></div></div>
                 <div class="preview-cells preview-cells-top"><span><small>CUST NO.</small><b id="previewCustomer">-</b></span><span><small>P.O NO.</small><b id="previewPo">-</b></span></div>
                 <div class="preview-cells preview-cells-bottom"><span><small>WAF NO.</small><b id="previewSku">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
             </div>
