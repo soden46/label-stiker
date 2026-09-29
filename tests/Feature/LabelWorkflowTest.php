@@ -199,7 +199,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertNotNull($label->fresh()->printed_at);
     }
 
-    public function test_label_pdf_uses_black_panel_and_standard_text(): void
+    public function test_label_pdf_uses_yellow_panel_and_standard_text(): void
     {
         $label = new LabelPrint([
             'purchase_order_no' => 'PO-TEST', 'customer_part_no' => 'CUST-TEST', 'quantity' => 1,
@@ -208,29 +208,41 @@ class LabelWorkflowTest extends TestCase
         ]);
         $html = view('labels.pdf', ['pages' => [[
             'label' => $label,
-            'partBarcodeDataUri' => '',
             'catalogBarcodeDataUri' => '',
             'logoDataUri' => null,
         ]]])->render();
 
-        $this->assertStringNotContainsString('#ffc400', $html);
-        $this->assertStringContainsString('background: #050505', $html);
-        $this->assertStringContainsString('color: #fff', $html);
+        $this->assertStringContainsString('background: #ffc400', $html);
+        $this->assertStringContainsString('color: #050505', $html);
+        $this->assertStringContainsString('font-family: "Anton", sans-serif;', $html);
+        $this->assertStringContainsString('fonts/anton/Anton-Regular.ttf', $html);
+        $this->assertStringContainsString('font-family: Helvetica, Arial, sans-serif;', $html);
+        $this->assertGreaterThanOrEqual(3, substr_count($html, 'font-family: Helvetica, Arial, sans-serif;'));
         $this->assertStringNotContainsString('#2b5a9e', $html);
         $this->assertStringContainsString('border-radius: 6mm 6mm 0 0', $html);
         $this->assertStringContainsString('Description.', $html);
         $this->assertStringContainsString('.sticker-description', $html);
-        $this->assertStringContainsString('.sticker-standard', $html);
-        $this->assertStringContainsString('.sticker-standard span', $html);
-        $this->assertStringContainsString('font-size: 10pt !important;', $html);
-        $this->assertStringContainsString('width: 330%;', $html);
-        $this->assertStringContainsString('transform: scaleX(0.49);', $html);
-        $this->assertStringContainsString('class="field-title-spacer"', $html);
-        $this->assertStringContainsString('<td class="sticker-standard">', $html);
+        $this->assertStringContainsString('border-spacing: 1.5mm 0;', $html);
+        $this->assertStringContainsString('<col style="width:25.5%"><col style="width:74.5%">', $html);
+        $this->assertStringContainsString('height: 20.6mm;', $html);
+        $this->assertStringContainsString('max-width: 21.5mm;', $html);
+        $this->assertStringNotContainsString('border: 0.3mm solid #050505;', $html);
+        $this->assertStringNotContainsString('border-left: 2mm solid #050505;', $html);
+        $this->assertStringNotContainsString('border-right: 2.2mm solid #050505;', $html);
+        $this->assertStringContainsString('text-align: right;', $html);
+        $this->assertStringContainsString('.barcode-standard', $html);
+        $this->assertStringContainsString('.barcode-standard span', $html);
+        $this->assertStringContainsString('font-size: 8pt;', $html);
+        $this->assertStringContainsString('line-height: 0.85;', $html);
+        $this->assertStringContainsString('width: 140%;', $html);
+        $this->assertStringContainsString('transform: scaleX(0.7);', $html);
+        $this->assertStringNotContainsString('class="field-title-spacer"', $html);
+        $this->assertStringNotContainsString('<td class="sticker-standard">', $html);
+        $this->assertStringNotContainsString('alt="Part barcode"', $html);
         $this->assertStringNotContainsString('rowspan="2"', $html);
-        $this->assertStringContainsString('<col style="width:42%"><col style="width:23%"><col style="width:35%">', $html);
+        $this->assertSame(2, substr_count($html, '<col style="width:60%"><col style="width:40%">'));
         $this->assertStringContainsString('height: 14.5mm', $html);
-        $this->assertStringContainsString('height: 14.5mm !important;', $html);
+        $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 13pt;'));
         $this->assertStringContainsString('white-space: nowrap;', $html);
         $this->assertStringContainsString('clear: both;', $html);
         $this->assertStringContainsString('margin-top: 1.5mm;', $html);

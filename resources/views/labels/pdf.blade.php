@@ -3,6 +3,20 @@
 <head>
 <meta charset="utf-8">
 <style>
+@font-face {
+    font-family: "Anton";
+    font-style: normal;
+    font-weight: 400;
+    src: url("{{ str_replace('\\', '/', public_path('fonts/anton/Anton-Regular.ttf')) }}") format("truetype");
+}
+
+@font-face {
+    font-family: "Anton";
+    font-style: normal;
+    font-weight: 700;
+    src: url("{{ str_replace('\\', '/', public_path('fonts/anton/Anton-Regular.ttf')) }}") format("truetype");
+}
+
 @page {
     size: 100mm 100mm;
     margin: 0;
@@ -18,7 +32,7 @@ html, body {
     margin: 0;
     padding: 0;
     color: #050505;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: "Anton", sans-serif;
     font-size: 9pt;
     line-height: 1.1;
 }
@@ -43,13 +57,14 @@ html, body {
     width: 90mm;
     height: 65mm;
     padding: 5mm;
-    background: #050505;
+    background: #ffc400;
     border-radius: 6mm 6mm 0 0;
 }
 
 .sticker-header,
 .sticker-fields {
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 1.5mm 0;
     table-layout: fixed;
 }
 
@@ -60,9 +75,9 @@ html, body {
 }
 
 .sticker-logo {
-    width: 18%;
+    width: 25.5%;
     padding: 0;
-    background: #050505;
+    background: #ffc400;
     border: 0;
     text-align: center;
     vertical-align: middle;
@@ -70,15 +85,17 @@ html, body {
 
 .sticker-logo-image {
     display: block;
-    max-width: 17mm;
-    max-height: 19mm;
+    width: auto;
+    height: 20.6mm;
+    max-width: 21.5mm;
+    max-height: 20.6mm;
     margin: auto;
 }
 
 .sticker-logo strong,
 .sticker-logo small {
     display: block;
-    color: #fff;
+    color: #050505;
 }
 
 .sticker-logo strong {
@@ -92,7 +109,7 @@ html, body {
 .sticker-description {
     padding: 3mm 2.5mm;
     background: #fff;
-    border-left: 2mm solid #050505;
+    border: 0;
     text-align: left;
     vertical-align: top;
     /* DomPDF adds the 3 mm top and bottom padding to this height. */
@@ -101,6 +118,7 @@ html, body {
 
 .sticker-description-label {
     display: block;
+            font-family: Helvetica, Arial, sans-serif;
     font-size: 6.5pt;
     line-height: 1;
     font-weight: 700;
@@ -136,17 +154,15 @@ html, body {
 
 .field-titles td {
     height: 4.8mm;
-    padding: 0 0.5mm;
-    background: #050505;
-    color: #fff;
+    padding: 0 1mm 0 0.5mm;
+    background: #ffc400;
+    color: #050505;
+            font-family: Helvetica, Arial, sans-serif;
     font-size: 6.5pt;
     font-weight: 700;
     letter-spacing: 0.5pt;
+    text-align: right;
     white-space: nowrap;
-}
-
-.field-title-spacer {
-    padding: 0 !important;
 }
 
 .field-values td {
@@ -154,8 +170,8 @@ html, body {
     height: 14.5mm;
     padding: 1mm 0.5mm;
     background: #fff;
-    border-right: 2.2mm solid #050505;
-    font-size: 9.8pt;
+    border: 0;
+    font-size: 13pt;
     line-height: 1.05;
     font-weight: 700;
     white-space: nowrap;
@@ -163,39 +179,27 @@ html, body {
     text-overflow: ellipsis;
 }
 
-.field-values td:last-child {
-    border-right: 0;
-}
-
 .field-values td.value-po {
-    font-size: 8.8pt;
+    font-size: 13pt;
 }
 
-.sticker-fields-bottom .field-values td {
-    height: 14mm;
+.barcode-standard {
+    width: 42mm;
+    margin: 0 auto;
+    color: #050505;
+            font-family: Helvetica, Arial, sans-serif;
+    font-size: 8pt;
+    line-height: 0.85;
+    font-weight: 700;
+    letter-spacing: -0.1pt;
+    text-align: left;
 }
 
-.sticker-standard {
-    background: #050505 !important;
-    color: #fff !important;
-    border-right: 0 !important;
-    text-align: left !important;
-    vertical-align: top !important;
-    height: 14.5mm !important;
-    padding: 1mm 0 1.2mm 1mm !important;
-    font-family: Helvetica, Arial, sans-serif !important;
-    font-size: 10pt !important;
-    line-height: 0.93 !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.1pt !important;
-    white-space: normal !important;
-}
-
-.sticker-standard span {
+.barcode-standard span {
     display: block;
-    width: 330%;
+    width: 140%;
     white-space: nowrap;
-    transform: scaleX(0.49);
+    transform: scaleX(0.7);
     transform-origin: left top;
 }
 
@@ -229,7 +233,6 @@ html, body {
 @foreach($pages as $index => $page)
     @php
         $label = $page['label'];
-        $partBarcodeDataUri = $page['partBarcodeDataUri'];
         $catalogBarcodeDataUri = $page['catalogBarcodeDataUri'];
         $logoDataUri = $page['logoDataUri'];
     @endphp

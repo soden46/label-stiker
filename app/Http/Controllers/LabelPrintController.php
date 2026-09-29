@@ -165,7 +165,6 @@ class LabelPrintController extends Controller
         foreach ($labels as $label) {
             $label->loadMissing('product');
 
-            $partBarcodeDataUri = $barcode->pdfDataUri($label->barcode_value);
             $catalogBarcodeDataUri = $barcode->pdfDataUri($label->product_snapshot['supplier_code'] ?: $label->barcode_value);
             $logoDataUri = $branding->dataUriForPath($label->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
@@ -174,7 +173,6 @@ class LabelPrintController extends Controller
             foreach (range(1, (int) $copies->get($label->id, 1)) as $copy) {
                 $pages[] = [
                     'label' => $label,
-                    'partBarcodeDataUri' => $partBarcodeDataUri,
                     'catalogBarcodeDataUri' => $catalogBarcodeDataUri,
                     'logoDataUri' => $logoDataUri,
                 ];
