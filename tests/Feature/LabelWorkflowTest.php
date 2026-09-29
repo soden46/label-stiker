@@ -111,6 +111,9 @@ class LabelWorkflowTest extends TestCase
             ->assertSee('P.O NO.')
             ->assertSee('WAF NO.')
             ->assertSee('QTY.')
+            ->assertSee('<col style="width:18%"><col style="width:82%">', false)
+            ->assertSee('<col style="width:60%"><col style="width:40%">', false)
+            ->assertSee('<col style="width:42%"><col style="width:23%"><col style="width:35%">', false)
             ->assertDontSee('CODE.');
 
         $this->actingAs($user)->get(route('labels.pdf', $label))
@@ -214,23 +217,30 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('background: #050505', $html);
         $this->assertStringContainsString('color: #fff', $html);
         $this->assertStringNotContainsString('#2b5a9e', $html);
-        $this->assertStringContainsString('border-radius: 8mm 8mm 0 0', $html);
-        $this->assertStringContainsString('border: 0.35mm solid #050505', $html);
+        $this->assertStringContainsString('border-radius: 6mm 6mm 0 0', $html);
         $this->assertStringContainsString('Description.', $html);
         $this->assertStringContainsString('.sticker-description', $html);
         $this->assertStringContainsString('.sticker-standard', $html);
         $this->assertStringContainsString('.sticker-standard span', $html);
+        $this->assertStringContainsString('font-size: 10pt !important;', $html);
+        $this->assertStringContainsString('width: 330%;', $html);
+        $this->assertStringContainsString('transform: scaleX(0.49);', $html);
         $this->assertStringContainsString('class="field-title-spacer"', $html);
         $this->assertStringContainsString('<td class="sticker-standard">', $html);
         $this->assertStringNotContainsString('rowspan="2"', $html);
-        $this->assertStringContainsString('<col style="width:43%"><col style="width:24%"><col style="width:33%">', $html);
+        $this->assertStringContainsString('<col style="width:42%"><col style="width:23%"><col style="width:35%">', $html);
         $this->assertStringContainsString('height: 14.5mm', $html);
+        $this->assertStringContainsString('height: 14.5mm !important;', $html);
         $this->assertStringContainsString('white-space: nowrap;', $html);
         $this->assertStringContainsString('clear: both;', $html);
-        $this->assertStringContainsString('margin-top: 2mm;', $html);
+        $this->assertStringContainsString('margin-top: 1.5mm;', $html);
+        $this->assertStringContainsString('height: 20mm;', $html);
+        $this->assertStringContainsString('height: 65mm;', $html);
+        $this->assertStringContainsString('width: 100mm;', $html);
+        $this->assertStringContainsString('margin-top: 5mm;', $html);
         $this->assertStringContainsString('height: 18mm;', $html);
+        $this->assertStringContainsString('height: 15mm;', $html);
         $this->assertStringContainsString('width: 42mm;', $html);
-        $this->assertStringContainsString('font-size: 5.4pt !important;', $html);
         $this->assertStringNotContainsString('.barcode-title', $html);
         $this->assertStringNotContainsString('Company.', $html);
         $this->assertStringNotContainsString('Catalog', $html);

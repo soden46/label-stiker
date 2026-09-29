@@ -1,0 +1,144 @@
+/* Keep the browser preview aligned with the fixed 100 x 100 mm DomPDF label. */
+.result-stage > .sticker-page.is-result-label {
+    width: 100mm;
+    height: 100mm;
+    padding: 0;
+    background: #fff;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-body {
+    width: 100mm;
+    margin: 0;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-panel {
+    width: 100mm;
+    height: 75mm;
+    padding: 5mm;
+    overflow: visible;
+    background: #050505;
+    border-radius: 6mm 6mm 0 0;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-header,
+.result-stage > .sticker-page.is-result-label .sticker-fields {
+    width: 90mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-header {
+    height: 20mm;
+    margin-top: 2mm;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-logo {
+    padding: 0;
+    border: 0;
+    background: #050505;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-logo.has-image {
+    padding: 0;
+    border: 0;
+    background: #050505;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-logo-image {
+    max-width: 17mm;
+    max-height: 19mm;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-description {
+    height: 20mm;
+    padding: 3mm 2.5mm;
+    border-left: 2mm solid #050505;
+    background: #fff;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-description-label {
+    font-size: 6.5pt;
+    line-height: 1;
+    letter-spacing: .9pt;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-description strong {
+    font-size: 13pt;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-description strong.is-long {
+    font-size: 10.5pt;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-fields {
+    margin-top: 1.5mm;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-fields .field-titles td {
+    height: 4.8mm;
+    padding: 0 .5mm;
+    background: #050505;
+    color: #fff;
+    font-size: 6.5pt;
+    font-weight: 700;
+    letter-spacing: .5pt;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-fields .field-values td {
+    height: 16.5mm;
+    padding: 1mm .5mm;
+    border-right: 2.2mm solid #050505;
+    background: #fff;
+    color: #050505;
+    font-size: 9.8pt;
+    font-weight: 700;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-fields .field-values td.value-po {
+    font-size: 8.8pt;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-fields-bottom .field-values td {
+    height: 16.5mm;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-standard {
+    height: 16.5mm !important;
+    padding: 1mm 0 1.2mm 1mm !important;
+    border-right: 0 !important;
+    background: #050505 !important;
+    color: #fff !important;
+    text-align: left !important;
+    vertical-align: top !important;
+    font-family: Helvetica, Arial, sans-serif !important;
+    font-size: 10pt !important;
+    line-height: .93 !important;
+    font-weight: 700 !important;
+    letter-spacing: -.1pt !important;
+    white-space: normal !important;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-standard span {
+    display: block;
+    width: 330% !important;
+    white-space: nowrap;
+    transform: scaleX(.49) !important;
+    transform-origin: left top;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-barcodes {
+    width: 100mm;
+    height: 20mm;
+    margin-top: 5mm;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-barcodes td {
+    height: 20mm;
+    padding: 0 2mm;
+    vertical-align: top;
+}
+
+.result-stage > .sticker-page.is-result-label .sticker-barcode-canvas,
+.result-stage > .sticker-page.is-result-label .sticker-barcode-canvas div {
+    height: 15mm !important;
+}

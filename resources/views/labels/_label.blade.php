@@ -2,7 +2,7 @@
     <div class="sticker-body">
         <div class="sticker-panel">
             <table class="sticker-header" role="presentation">
-                <colgroup><col style="width:22%"><col style="width:78%"></colgroup>
+                <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
                 <tr>
                     <td class="sticker-logo {{ ($logoDataUri ?? null) ? 'has-image' : '' }}">
                         @if($logoDataUri ?? null)
@@ -29,7 +29,7 @@
 
             @if($isPdf ?? false)
             <table class="sticker-fields sticker-fields-top" role="presentation">
-                <colgroup><col style="width:58%"><col style="width:42%"></colgroup>
+                <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
                 <tr class="field-titles">
                     <td>CUST NO.</td>
                     <td>P.O NO.</td>
@@ -41,7 +41,7 @@
             </table>
 
             <table class="sticker-fields sticker-fields-bottom" role="presentation">
-                <colgroup><col style="width:43%"><col style="width:24%"><col style="width:33%"></colgroup>
+                <colgroup><col style="width:42%"><col style="width:23%"><col style="width:35%"></colgroup>
                 <tr class="field-titles">
                     <td>WAF NO.</td>
                     <td>QTY.</td>

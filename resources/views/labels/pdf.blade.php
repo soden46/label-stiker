@@ -24,9 +24,8 @@ html, body {
 }
 
 .sticker-page {
-    /* DomPDF resolves this width before the horizontal padding. */
-    width: 94mm;
-    padding: 2mm 3mm 0 3mm;
+    width: 100mm;
+    padding: 0;
 }
 
 .sticker-page + .sticker-page {
@@ -34,44 +33,45 @@ html, body {
 }
 
 .sticker-body {
-    width: 94mm;
+    width: 100mm;
     margin: 0;
     position: relative;
 }
 
 .sticker-panel {
-    /* 89 + (2 x 2.5) produces the 94 x 72 mm preview panel in DomPDF. */
-    width: 89mm;
-    height: 67mm;
-    padding: 2.5mm;
+    /* DomPDF adds the 5 mm padding outside these dimensions. */
+    width: 90mm;
+    height: 65mm;
+    padding: 5mm;
     background: #050505;
-    border-radius: 8mm 8mm 0 0;
+    border-radius: 6mm 6mm 0 0;
 }
 
 .sticker-header,
 .sticker-fields {
-    width: 89mm;
     border-collapse: collapse;
     table-layout: fixed;
 }
 
 .sticker-header {
-    height: 18mm;
+    width: 90mm;
+    height: 20mm;
+    margin-top: 2mm;
 }
 
 .sticker-logo {
-    width: 22%;
-    padding: 0.7mm;
+    width: 18%;
+    padding: 0;
     background: #050505;
-    border: 0.35mm solid #050505;
+    border: 0;
     text-align: center;
     vertical-align: middle;
 }
 
 .sticker-logo-image {
     display: block;
-    max-width: 15.5mm;
-    max-height: 13.5mm;
+    max-width: 17mm;
+    max-height: 19mm;
     margin: auto;
 }
 
@@ -90,21 +90,21 @@ html, body {
 }
 
 .sticker-description {
-    padding: 2mm 2.8mm;
+    padding: 3mm 2.5mm;
     background: #fff;
     border-left: 2mm solid #050505;
     text-align: left;
     vertical-align: top;
-    /* DomPDF adds the 2 mm vertical padding to this content height. */
+    /* DomPDF adds the 3 mm top and bottom padding to this height. */
     height: 14mm;
 }
 
 .sticker-description-label {
     display: block;
-    font-size: 7pt;
+    font-size: 6.5pt;
     line-height: 1;
     font-weight: 700;
-    letter-spacing: 0.8pt;
+    letter-spacing: 0.9pt;
     margin-bottom: 0.5mm;
 }
 
@@ -124,7 +124,8 @@ html, body {
 }
 
 .sticker-fields {
-    margin-top: 1.3mm;
+    width: 90mm;
+    margin-top: 1.5mm;
 }
 
 .sticker-fields td {
@@ -138,9 +139,9 @@ html, body {
     padding: 0 0.5mm;
     background: #050505;
     color: #fff;
-    font-size: 8.2pt;
+    font-size: 6.5pt;
     font-weight: 700;
-    letter-spacing: 0.8pt;
+    letter-spacing: 0.5pt;
     white-space: nowrap;
 }
 
@@ -180,31 +181,35 @@ html, body {
     border-right: 0 !important;
     text-align: left !important;
     vertical-align: top !important;
+    height: 14.5mm !important;
     padding: 1mm 0 1.2mm 1mm !important;
     font-family: Helvetica, Arial, sans-serif !important;
-    font-size: 5.4pt !important;
-    line-height: 1.1 !important;
+    font-size: 10pt !important;
+    line-height: 0.93 !important;
     font-weight: 700 !important;
-    letter-spacing: -0.15pt !important;
+    letter-spacing: -0.1pt !important;
     white-space: normal !important;
 }
 
 .sticker-standard span {
     display: block;
+    width: 330%;
     white-space: nowrap;
+    transform: scaleX(0.49);
+    transform-origin: left top;
 }
 
 .sticker-barcodes {
-    width: 94mm;
+    width: 100mm;
     border-collapse: collapse;
     table-layout: fixed;
     clear: both;
-    margin-top: 2mm;
+    margin-top: 5mm;
     page-break-inside: avoid;
 }
 
 .sticker-barcodes td {
-    height: 21mm;
+    height: 18mm;
     padding: 0 2mm;
     vertical-align: top;
     text-align: center;
@@ -213,7 +218,7 @@ html, body {
 .pdf-barcode {
     display: block;
     width: 42mm;
-    height: 9.3mm;
+    height: 15mm;
     margin: 0 auto;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
