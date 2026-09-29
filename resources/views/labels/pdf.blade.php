@@ -57,7 +57,7 @@ html, body {
     width: 90mm;
     height: 65mm;
     padding: 5mm;
-    background: #e6e6e6;
+    background: #d4a000;
     border-radius: 6mm 6mm 0 0;
 }
 
@@ -77,7 +77,7 @@ html, body {
 .sticker-logo {
     width: 25.5%;
     padding: 0;
-    background: #e6e6e6;
+    background: #d4a000;
     border: 0;
     text-align: center;
     vertical-align: middle;
@@ -155,7 +155,7 @@ html, body {
 .field-titles td {
     height: 4.8mm;
     padding: 0 1mm 0 0.5mm;
-    background: #e6e6e6;
+    background: #d4a000;
     color: #050505;
             font-family: Helvetica, Arial, sans-serif;
     font-size: 7.5pt;

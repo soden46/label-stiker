@@ -212,7 +212,7 @@ class LabelWorkflowTest extends TestCase
             'logoDataUri' => null,
         ]]])->render();
 
-        $this->assertStringContainsString('background: #e6e6e6', $html);
+        $this->assertStringContainsString('background: #d4a000', $html);
         $this->assertStringContainsString('color: #050505', $html);
         $this->assertStringContainsString('font-family: "Anton", sans-serif;', $html);
         $this->assertStringContainsString('fonts/anton/Anton-Regular.ttf', $html);
