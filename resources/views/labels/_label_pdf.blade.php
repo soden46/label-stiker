@@ -46,7 +46,7 @@
         </div>
 
         <table class="sticker-barcodes" role="presentation">
-            <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+            <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
             <tr>
                 <td>
                     <div class="barcode-standard">

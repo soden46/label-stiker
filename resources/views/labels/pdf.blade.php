@@ -33,7 +33,7 @@ html, body {
     padding: 0;
     color: #050505;
     font-family: "Anton", sans-serif;
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.1;
 }
 
@@ -184,12 +184,12 @@ html, body {
 }
 
 .barcode-standard {
-    width: 42mm;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     color: #050505;
-            font-family: Helvetica, Arial, sans-serif;
-    font-size: 8pt;
-    line-height: 0.85;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    line-height: 0.9;
     font-weight: 700;
     letter-spacing: -0.1pt;
     text-align: left;
@@ -197,31 +197,32 @@ html, body {
 
 .barcode-standard span {
     display: block;
-    width: 140%;
+    width: 125%;
     white-space: nowrap;
-    transform: scaleX(0.7);
+    transform: scaleX(0.8);
     transform-origin: left top;
 }
 
 .sticker-barcodes {
-    width: 100mm;
-    border-collapse: collapse;
+    width: 90mm;
+    margin: 5mm 0 0 5mm;
+    border-collapse: separate;
+    border-spacing: 1.5mm 0;
     table-layout: fixed;
     clear: both;
-    margin-top: 5mm;
     page-break-inside: avoid;
 }
 
 .sticker-barcodes td {
     height: 18mm;
-    padding: 0 2mm;
+    padding: 0;
     vertical-align: top;
     text-align: center;
 }
 
 .pdf-barcode {
     display: block;
-    width: 42mm;
+    width: 100%;
     height: 15mm;
     margin: 0 auto;
     image-rendering: -webkit-optimize-contrast;
