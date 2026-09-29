@@ -55,16 +55,16 @@ html, body {
 .sticker-panel {
     /* DomPDF adds the 5 mm padding outside these dimensions. */
     width: 90mm;
-    height: 65mm;
+    height: 69mm;
     padding: 5mm;
-    background: #d4a000;
+    background: #ffc400;
     border-radius: 6mm 6mm 0 0;
 }
 
 .sticker-header,
 .sticker-fields {
     border-collapse: separate;
-    border-spacing: 1.5mm 0;
+    border-spacing: 3mm 0;
     table-layout: fixed;
 }
 
@@ -72,12 +72,13 @@ html, body {
     width: 90mm;
     height: 20mm;
     margin-top: 2mm;
+    border-spacing: 5mm 0;
 }
 
 .sticker-logo {
     width: 25.5%;
     padding: 0;
-    background: #d4a000;
+    background: #050505;
     border: 0;
     text-align: center;
     vertical-align: middle;
@@ -143,7 +144,7 @@ html, body {
 
 .sticker-fields {
     width: 90mm;
-    margin-top: 1.5mm;
+    margin-top: 3mm;
 }
 
 .sticker-fields td {
@@ -155,7 +156,7 @@ html, body {
 .field-titles td {
     height: 4.8mm;
     padding: 0 1mm 0 0.5mm;
-    background: #d4a000;
+    background: #ffc400;
     color: #050505;
             font-family: Helvetica, Arial, sans-serif;
     font-size: 7.5pt;
@@ -206,9 +207,9 @@ html, body {
 
 .sticker-barcodes {
     width: 90mm;
-    margin: 5mm 0 0 5mm;
+    margin: 3mm 0 0 5mm;
     border-collapse: separate;
-    border-spacing: 1.5mm 0;
+    border-spacing: 3mm 0;
     table-layout: fixed;
     clear: both;
     page-break-inside: avoid;

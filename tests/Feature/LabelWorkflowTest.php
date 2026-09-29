@@ -212,7 +212,7 @@ class LabelWorkflowTest extends TestCase
             'logoDataUri' => null,
         ]]])->render();
 
-        $this->assertStringContainsString('background: #d4a000', $html);
+        $this->assertStringContainsString('background: #ffc400', $html);
         $this->assertStringContainsString('color: #050505', $html);
         $this->assertStringContainsString('font-family: "Anton", sans-serif;', $html);
         $this->assertStringContainsString('fonts/anton/Anton-Regular.ttf', $html);
@@ -222,8 +222,9 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('border-radius: 6mm 6mm 0 0', $html);
         $this->assertStringContainsString('DESCRIPTION.', $html);
         $this->assertStringContainsString('.sticker-description', $html);
-        $this->assertStringContainsString('border-spacing: 1.5mm 0;', $html);
+        $this->assertStringContainsString('border-spacing: 3mm 0;', $html);
         $this->assertStringContainsString('<col style="width:25.5%"><col style="width:74.5%">', $html);
+        $this->assertStringContainsString('border-spacing: 5mm 0;', $html);
         $this->assertStringContainsString('height: 20.6mm;', $html);
         $this->assertStringContainsString('max-width: 21.5mm;', $html);
         $this->assertStringNotContainsString('border: 0.3mm solid #050505;', $html);
@@ -245,11 +246,11 @@ class LabelWorkflowTest extends TestCase
         $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 13pt;'));
         $this->assertStringContainsString('white-space: nowrap;', $html);
         $this->assertStringContainsString('clear: both;', $html);
-        $this->assertStringContainsString('margin-top: 1.5mm;', $html);
+        $this->assertStringContainsString('margin-top: 3mm;', $html);
         $this->assertStringContainsString('height: 20mm;', $html);
-        $this->assertStringContainsString('height: 65mm;', $html);
+        $this->assertStringContainsString('height: 69mm;', $html);
         $this->assertStringContainsString('width: 90mm;', $html);
-        $this->assertStringContainsString('margin: 5mm 0 0 5mm;', $html);
+        $this->assertStringContainsString('margin: 3mm 0 0 5mm;', $html);
         $this->assertStringContainsString('height: 18mm;', $html);
         $this->assertStringContainsString('height: 15mm;', $html);
         $this->assertStringContainsString('width: 100%;', $html);
