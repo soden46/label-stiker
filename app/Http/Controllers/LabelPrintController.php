@@ -43,7 +43,7 @@ class LabelPrintController extends Controller
         return view('labels.index', compact('labels', 'search', 'status'));
     }
 
-    public function create(): View
+    public function create(BarcodeService $barcode): View
     {
         $products = Product::query()
             ->select(['id', 'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom'])
@@ -65,6 +65,7 @@ class LabelPrintController extends Controller
 
         return view('labels.create', [
             'products' => $products,
+            'catalogQrDataUri' => $barcode->qrDataUri(route('catalogs.patria')),
         ]);
     }
 
@@ -150,7 +151,7 @@ class LabelPrintController extends Controller
         return [
             'label' => $labelPrint,
             'partBarcode' => $barcode->html($labelPrint->barcode_value),
-            'catalogBarcode' => $barcode->html($labelPrint->product_snapshot['supplier_code'] ?: $labelPrint->barcode_value),
+            'catalogQrDataUri' => $barcode->qrDataUri(route('catalogs.patria')),
             'logoDataUri' => $branding->dataUriForPath($labelPrint->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
                 ?: $branding->logoDataUri(),
@@ -165,7 +166,7 @@ class LabelPrintController extends Controller
         foreach ($labels as $label) {
             $label->loadMissing('product');
 
-            $catalogBarcodeDataUri = $barcode->pdfDataUri($label->product_snapshot['supplier_code'] ?: $label->barcode_value);
+            $catalogQrDataUri = $barcode->qrDataUri(route('catalogs.patria'));
             $logoDataUri = $branding->dataUriForPath($label->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
                 ?: $branding->logoDataUri();
@@ -173,7 +174,7 @@ class LabelPrintController extends Controller
             foreach (range(1, (int) $copies->get($label->id, 1)) as $copy) {
                 $pages[] = [
                     'label' => $label,
-                    'catalogBarcodeDataUri' => $catalogBarcodeDataUri,
+                    'catalogQrDataUri' => $catalogQrDataUri,
                     'logoDataUri' => $logoDataUri,
                 ];
             }

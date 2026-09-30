@@ -17,6 +17,10 @@ use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => auth()->check() ? redirect(auth()->user()->homePath()) : redirect()->route('login'));
+Route::get('/catalog/patria-air-brake-system-parts', fn () => response()->file(
+    public_path('catalogs/patria-air-brake-system-parts.pdf'),
+    ['Content-Type' => 'application/pdf'],
+))->name('catalogs.patria');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');

@@ -1,144 +1,245 @@
-/* Keep the browser preview aligned with the fixed 100 x 100 mm DomPDF label. */
-:root .result-stage > .sticker-page.is-result-label {
+/* Browser preview mirrors the same _label_pdf structure used by DomPDF. */
+@font-face {
+    font-family: "Anton";
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/anton/Anton-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Anton";
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/anton/Anton-Regular.ttf') format('truetype');
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label {
     width: 100mm;
     height: 100mm;
     padding: 0;
-    background: #fff;
+    background: #ffc400;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-body {
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-body {
     width: 100mm;
     margin: 0;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-panel {
-    width: 100mm;
-    height: 75mm;
-    padding: 5mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-panel {
+    width: 92mm;
+    height: 69mm;
+    padding: 5mm 4mm;
     overflow: visible;
-    background: #050505;
-    border-radius: 6mm 6mm 0 0;
+    background: #ffc400;
+    border-radius: 0;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-header,
-:root .result-stage > .sticker-page.is-result-label .sticker-fields {
-    width: 90mm;
-    border-collapse: collapse;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-header,
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-fields {
+    border-collapse: separate;
+    border-spacing: 3mm 0;
     table-layout: fixed;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-header {
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-header {
+    width: 96mm;
     height: 20mm;
     margin-top: 2mm;
+    border-spacing: 5mm 0;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-logo {
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-logo {
+    width: 27.5%;
     padding: 0;
-    border: 0;
     background: #050505;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-logo.has-image {
-    padding: 0;
     border: 0;
-    background: #050505;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-logo-image {
-    max-width: 17mm;
-    max-height: 19mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-logo-image {
+    display: block;
+    width: auto;
+    height: 20.6mm;
+    max-width: 21.5mm;
+    max-height: 20.6mm;
+    margin: auto;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-description {
-    height: 20mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-description {
+    height: 14mm;
     padding: 3mm 2.5mm;
-    border-left: 2mm solid #050505;
     background: #fff;
+    border: 0;
+    text-align: left;
+    vertical-align: top;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-description-label {
-    font-size: 6.5pt;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-description-label {
+    display: block;
+    margin-bottom: .5mm;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: .9pt;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-description strong {
-    font-size: 13pt;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-description strong {
+    display: block;
+    overflow: hidden;
+    font-family: "Anton", sans-serif;
+    font-size: 20pt;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .4pt;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-description strong.is-long {
-    font-size: 10.5pt;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-description strong.is-long {
+    font-size: 15pt;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-fields {
-    margin-top: 1.5mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-fields {
+    width: 94mm;
+    margin-top: 2mm;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-fields .field-titles td {
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-fields td {
+    overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .field-titles td {
     height: 4.8mm;
-    padding: 0 .5mm;
-    background: #050505;
-    color: #fff;
-    font-size: 6.5pt;
+    padding: 0 1mm 0 .5mm;
+    background: #ffc400;
+    color: #050505;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 7.5pt;
     font-weight: 700;
     letter-spacing: .5pt;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-fields .field-values td {
-    height: 16.5mm;
-    padding: 1mm .5mm;
-    border-right: 2.2mm solid #050505;
-    background: #fff;
-    color: #050505;
-    font-size: 9.8pt;
-    font-weight: 700;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-fields .field-values td.value-po {
-    font-size: 8.8pt;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-fields-bottom .field-values td {
-    height: 16.5mm;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-standard {
-    height: 16.5mm !important;
-    padding: 1mm 0 1.2mm 1mm !important;
-    border-right: 0 !important;
-    background: #050505 !important;
-    color: #fff !important;
-    text-align: left !important;
-    vertical-align: top !important;
-    font-family: Helvetica, Arial, sans-serif !important;
-    font-size: 10pt !important;
-    line-height: .93 !important;
-    font-weight: 700 !important;
-    letter-spacing: -.1pt !important;
-    white-space: normal !important;
-}
-
-:root .result-stage > .sticker-page.is-result-label .sticker-standard span {
-    display: block;
-    width: 330% !important;
+    text-align: right;
     white-space: nowrap;
-    transform: scaleX(.49) !important;
-    transform-origin: left top;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-barcodes {
-    width: 100mm;
-    height: 20mm;
-    margin-top: 5mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .field-values td {
+    height: 11.5mm;
+    padding: 1mm .5mm;
+    background: #fff;
+    border: 0;
+    color: #050505;
+    font-family: "Anton", sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.05;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-barcodes td {
-    height: 20mm;
-    padding: 0 2mm;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-barcodes {
+    width: 93mm;
+    height: 24mm;
+    margin: 4mm 0 0;
+    position: relative;
+    top: 6mm;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 3mm 0;
+    table-layout: fixed;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-barcodes td {
+    width: auto;
+    height: 24mm;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: center;
     vertical-align: top;
 }
 
-:root .result-stage > .sticker-page.is-result-label .sticker-barcode-canvas,
-:root .result-stage > .sticker-page.is-result-label .sticker-barcode-canvas div {
-    height: 15mm !important;
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .barcode-standard {
+    width: 100%;
+    height: 15mm;
+    margin: 0;
+    color: #050505;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.1pt;
+    text-align: left;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .barcode-standard span {
+    display: block;
+    width: 125%;
+    transform: scaleX(1);
+    transform-origin: left top;
+    white-space: nowrap;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-barcode-canvas {
+    width: auto;
+    height: 15mm;
+    overflow: visible;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .pdf-qr {
+    display: inline-block;
+    width: 25mm;
+    height: 25mm;
+    margin: -3.5mm -3.5mm 0 0;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-fields-bottom {
+    margin-top: 0;
+}
+
+:root .result-stage[data-label-layout] > .sticker-page.is-result-label .sticker-barcodes td:last-child {
+    text-align: right;
+}
+
+/* The Create page scales the exact same label markup instead of maintaining a second design. */
+:root .builder-preview-content {
+    padding: 0;
+}
+
+:root .preview-content .builder-result-stage {
+    display: block;
+    min-height: 270px;
+    height: 270px;
+    padding: 0;
+    overflow: hidden;
+    background: #f4f4ee;
+    border-radius: 14px;
+    position: relative;
+}
+
+:root .preview-content .builder-label-scale {
+    position: absolute;
+    top: 8px;
+    left: calc(50% - 125px);
+    width: 100mm;
+    height: 100mm;
+    transform: scale(.66);
+    transform-origin: top left;
+}
+
+:root .preview-content .builder-label-layout {
+    display: block;
+    min-height: 0;
+    height: 100mm;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border-radius: 0;
+}
+
+:root .preview-content .builder-label-layout > .sticker-page.is-result-label {
+    margin: 0;
+    box-shadow: none;
 }

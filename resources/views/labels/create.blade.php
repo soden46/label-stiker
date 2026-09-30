@@ -59,13 +59,43 @@
     <aside class="preview-card">
         <div class="preview-heading"><div><p class="eyebrow">LIVE PREVIEW</p><h3>Pratinjau label</h3></div><span>10 x 10 cm</span></div>
         <div class="empty-preview" id="emptyPreview"><div class="barcode-placeholder">|||| ||| || ||||</div><strong>Label menunggu data</strong><p>Pilih part untuk melihat gambaran label.</p></div>
-        <div class="preview-content" id="previewContent" hidden>
-            <div class="preview-yellow">
-                <div class="preview-head"><div class="preview-logo"><img src="{{ asset('logo.jpeg') }}" alt="WAF Spare Parts"></div><div class="preview-title"><small>DESCRIPTION.</small><strong id="previewDesc">-</strong></div></div>
-                <div class="preview-cells preview-cells-top"><span><small>CUST NO.</small><b id="previewCustomer">-</b></span><span><small>P.O NO.</small><b id="previewPo">-</b></span></div>
-                <div class="preview-cells preview-cells-bottom"><span><small>WAF NO.</small><b id="previewSku">-</b></span><span><small>QTY.</small><b id="previewQty">-</b></span><span class="preview-standard"><b>MANUFACTURED TO WAF<br>SPECIFICATIONS , A INDONESIA<br>REGISTERED TRADEMARK<br>ISO 9001 2015 CERTIFIED</b></span></div>
+        <div class="preview-content builder-preview-content" id="previewContent" hidden>
+            <div class="result-stage builder-result-stage">
+                <div class="builder-label-scale">
+                    <div class="result-stage builder-label-layout" data-label-layout>
+                <div class="sticker-page is-result-label">
+                    <div class="sticker-body">
+                        <div class="sticker-panel">
+                            <table class="sticker-header" role="presentation">
+                                <colgroup><col style="width:25.5%"><col style="width:74.5%"></colgroup>
+                                <tr>
+                                    <td class="sticker-logo has-image"><img class="sticker-logo-image" src="{{ asset('logo.jpeg') }}" alt="WAF Spare Parts"></td>
+                                    <td class="sticker-description"><span class="sticker-description-label">DESCRIPTION.</span><strong id="previewDesc">-</strong></td>
+                                </tr>
+                            </table>
+                            <table class="sticker-fields sticker-fields-top" role="presentation">
+                                <colgroup><col style="width:55.5%"><col style="width:44.5%"></colgroup>
+                                <tr class="field-titles"><td>CUST NO.</td><td>P.O NO.</td></tr>
+                                <tr class="field-values"><td id="previewCustomer">-</td><td class="value-po" id="previewPo">-</td></tr>
+                            </table>
+                            <table class="sticker-fields sticker-fields-bottom" role="presentation">
+                                <colgroup><col style="width:55.5%"><col style="width:44.5%"></colgroup>
+                                <tr class="field-titles"><td>WAF NO.</td><td>QTY.</td></tr>
+                                <tr class="field-values"><td id="previewSku">-</td><td id="previewQty">-</td></tr>
+                            </table>
+                            <table class="sticker-barcodes" role="presentation">
+                                <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
+                                <tr>
+                                    <td><div class="barcode-standard"><span>MANUFACTURED TO WAF</span><span>SPECIFICATIONS , A INDONESIA</span><span>REGISTERED TRADEMARK</span><span>ISO 9001 2015 CERTIFIED</span></div></td>
+                                    <td><div class="sticker-barcode-canvas"><img class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog PATRIA"></div></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
             </div>
-            <div class="fake-barcode"><div class="preview-barcode-row"><b>||||| || ||| |||||</b><b>|||| ||||| || ||||</b></div></div>
         </div>
         <ul class="preview-tips"><li><span>✓</span> Code 128 mudah dibaca scanner kasir</li><li><span>✓</span> Data part dan stok inventory dibekukan saat label dibuat</li><li><span>✓</span> Halaman PDF native 100 x 100 mm</li></ul>
     </aside>

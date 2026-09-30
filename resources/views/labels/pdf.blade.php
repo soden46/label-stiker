@@ -39,7 +39,9 @@ html, body {
 
 .sticker-page {
     width: 100mm;
+    height: 100mm;
     padding: 0;
+    background: #ffc400;
 }
 
 .sticker-page + .sticker-page {
@@ -54,9 +56,9 @@ html, body {
 
 .sticker-panel {
     /* DomPDF adds the 5 mm padding outside these dimensions. */
-    width: 90mm;
+    width: 92mm;
     height: 69mm;
-    padding: 5mm;
+    padding: 5mm 4mm;
     background: #ffc400;
     border-radius: 6mm 6mm 0 0;
 }
@@ -69,14 +71,14 @@ html, body {
 }
 
 .sticker-header {
-    width: 90mm;
+    width: 96mm;
     height: 20mm;
     margin-top: 2mm;
     border-spacing: 5mm 0;
 }
 
 .sticker-logo {
-    width: 25.5%;
+    width: 27.5%;
     padding: 0;
     background: #050505;
     border: 0;
@@ -129,7 +131,7 @@ html, body {
 
 .sticker-description strong {
     display: block;
-    font-size: 13pt;
+    font-size: 20pt;
     line-height: 1;
     font-weight: 700;
     letter-spacing: 0.4pt;
@@ -139,12 +141,12 @@ html, body {
 }
 
 .sticker-description strong.is-long {
-    font-size: 10.5pt;
+    font-size: 15pt;
 }
 
 .sticker-fields {
-    width: 90mm;
-    margin-top: 3mm;
+    width: 94mm;
+    margin-top: 2mm;
 }
 
 .sticker-fields td {
@@ -167,12 +169,12 @@ html, body {
 }
 
 .field-values td {
-    /* Keep the rendered row at 16.5 mm after the 1 mm top/bottom padding. */
-    height: 14.5mm;
+    /* DomPDF adds the 1 mm top/bottom padding to this declared height. */
+    height: 11.5mm;
     padding: 1mm 0.5mm;
     background: #fff;
     border: 0;
-    font-size: 13pt;
+    font-size: 18pt;
     line-height: 1.05;
     font-weight: 700;
     white-space: nowrap;
@@ -181,7 +183,11 @@ html, body {
 }
 
 .field-values td.value-po {
-    font-size: 13pt;
+    font-size: 18pt;
+}
+
+.sticker-fields-bottom {
+    margin-top: 0;
 }
 
 .barcode-standard {
@@ -190,7 +196,7 @@ html, body {
     margin: 0;
     color: #050505;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.1;
     font-weight: 700;
     letter-spacing: -0.1pt;
@@ -201,13 +207,15 @@ html, body {
     display: block;
     width: 125%;
     white-space: nowrap;
-    transform: scaleX(0.8);
+    transform: scaleX(1);
     transform-origin: left top;
 }
 
 .sticker-barcodes {
-    width: 90mm;
-    margin: 3mm 0 0 5mm;
+    width: 93mm;
+    margin: 4mm 0 0;
+    position: relative;
+    top: 6mm;
     border-collapse: separate;
     border-spacing: 3mm 0;
     table-layout: fixed;
@@ -216,7 +224,7 @@ html, body {
 }
 
 .sticker-barcodes td {
-    height: 18mm;
+    height: 24mm;
     padding: 0;
     vertical-align: top;
     text-align: center;
@@ -230,13 +238,24 @@ html, body {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
 }
+
+.pdf-qr {
+    display: inline-block;
+    width: 25mm;
+    height: 25mm;
+    margin: -3.5mm -3.5mm 0 0;
+}
+
+.sticker-barcodes td:last-child {
+    text-align: right;
+}
 </style>
 </head>
 <body>
 @foreach($pages as $index => $page)
     @php
         $label = $page['label'];
-        $catalogBarcodeDataUri = $page['catalogBarcodeDataUri'];
+        $catalogQrDataUri = $page['catalogQrDataUri'];
         $logoDataUri = $page['logoDataUri'];
     @endphp
     @include('labels._label_pdf')

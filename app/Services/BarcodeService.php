@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Picqer\Barcode\Renderers\HtmlRenderer;
 use Picqer\Barcode\Renderers\SvgRenderer;
 use Picqer\Barcode\Types\TypeCode128;
@@ -35,5 +38,16 @@ class BarcodeService
         $heightPx = $heightMm * 3.7795275591;
 
         return $this->dataUri($value, $widthPx, $heightPx);
+    }
+
+    public function qrDataUri(string $value, float $sizeMm = 15): string
+    {
+        $sizePx = (int) round($sizeMm * 3.7795275591);
+        $qrCode = QrCode::create($value)
+            ->setSize($sizePx)
+            ->setMargin(0)
+            ->setBackgroundColor(new Color(255, 196, 0));
+
+        return (new PngWriter)->write($qrCode)->getDataUri();
     }
 }

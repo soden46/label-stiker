@@ -6,15 +6,15 @@
 
 @section('content')
 <div class="label-result-layout">
-    <section class="result-stage">
+    <section class="result-stage" data-label-layout>
         <div class="ruler ruler-top"><span>10 × 10 cm</span></div>
-        @include('labels._label', ['isPdf' => true, 'isResult' => true])
+        @include('labels._label_pdf', ['isResult' => true])
     </section>
     <aside class="result-sidebar">
         <span class="success-orb">✓</span>
         <p class="eyebrow">GENERATE BERHASIL</p>
         <h2>Label siap meluncur.</h2>
-        <p>Periksa sekali lagi datanya. PDF memakai halaman tetap 100 × 100 mm dan barcode Code 128.</p>
+        <p>Periksa sekali lagi datanya. PDF memakai halaman tetap 100 × 100 mm, barcode Code 128, dan QR katalog PATRIA.</p>
         <div class="printer-profile"><strong>Zebra GC420t</strong><span>203 dpi · Thermal monochrome · 100 × 100 mm</span></div>
         <dl>
             <div><dt>Nomor PO</dt><dd>{{ $label->purchase_order_no }}</dd></div>

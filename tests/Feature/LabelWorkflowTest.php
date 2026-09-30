@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\StockBalance;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Services\BarcodeService;
 use App\Services\LabelBrandingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -51,6 +52,10 @@ class LabelWorkflowTest extends TestCase
 
         $this->actingAs($user)->get(route('labels.create'))
             ->assertOk()
+            ->assertSee('builder-preview-content')
+            ->assertSee('builder-result-stage')
+            ->assertSee('data-label-layout')
+            ->assertSee('class="pdf-qr"', false)
             ->assertSee('DESCRIPTION.')
             ->assertSee('CUST NO.')
             ->assertSee('P.O NO.')
@@ -66,7 +71,9 @@ class LabelWorkflowTest extends TestCase
             ->assertDontSee('CODE.')
             ->assertDontSee('STOCK INV.')
             ->assertDontSee('ALAMAT PENGIRIM')
-            ->assertDontSee('ALAMAT PENERIMA');
+            ->assertDontSee('ALAMAT PENERIMA')
+            ->assertDontSee('preview-yellow', false)
+            ->assertDontSee('fake-barcode', false);
     }
 
     public function test_admin_can_generate_and_view_a_label_pdf(): void
@@ -111,9 +118,10 @@ class LabelWorkflowTest extends TestCase
             ->assertSee('P.O NO.')
             ->assertSee('WAF NO.')
             ->assertSee('QTY.')
-            ->assertSee('<col style="width:18%"><col style="width:82%">', false)
-            ->assertSee('<col style="width:60%"><col style="width:40%">', false)
-            ->assertSee('<col style="width:42%"><col style="width:23%"><col style="width:35%">', false)
+            ->assertSee('<col style="width:25.5%"><col style="width:74.5%">', false)
+            ->assertSee('<col style="width:55.5%"><col style="width:44.5%">', false)
+            ->assertSee('class="barcode-standard"', false)
+            ->assertSee('class="pdf-qr"', false)
             ->assertDontSee('CODE.');
 
         $this->actingAs($user)->get(route('labels.pdf', $label))
@@ -208,7 +216,7 @@ class LabelWorkflowTest extends TestCase
         ]);
         $html = view('labels.pdf', ['pages' => [[
             'label' => $label,
-            'catalogBarcodeDataUri' => '',
+            'catalogQrDataUri' => app(BarcodeService::class)->qrDataUri(route('catalogs.patria')),
             'logoDataUri' => null,
         ]]])->render();
 
@@ -236,23 +244,24 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('font-size: 10pt;', $html);
         $this->assertStringContainsString('line-height: 1.1;', $html);
         $this->assertStringContainsString('width: 125%;', $html);
-        $this->assertStringContainsString('transform: scaleX(0.8);', $html);
+        $this->assertStringContainsString('transform: scaleX(1);', $html);
         $this->assertStringNotContainsString('class="field-title-spacer"', $html);
         $this->assertStringNotContainsString('<td class="sticker-standard">', $html);
         $this->assertStringNotContainsString('alt="Part barcode"', $html);
         $this->assertStringNotContainsString('rowspan="2"', $html);
-        $this->assertSame(3, substr_count($html, '<col style="width:60%"><col style="width:40%">'));
-        $this->assertStringContainsString('height: 14.5mm', $html);
-        $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 13pt;'));
+        $this->assertSame(2, substr_count($html, '<col style="width:55.5%"><col style="width:44.5%">'));
+        $this->assertSame(1, substr_count($html, '<col style="width:60%"><col style="width:40%">'));
+        $this->assertStringContainsString('height: 11.5mm', $html);
+        $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 18pt;'));
         $this->assertStringContainsString('white-space: nowrap;', $html);
         $this->assertStringContainsString('clear: both;', $html);
-        $this->assertStringContainsString('margin-top: 3mm;', $html);
+        $this->assertStringContainsString('margin-top: 2mm;', $html);
         $this->assertStringContainsString('height: 20mm;', $html);
         $this->assertStringContainsString('height: 69mm;', $html);
-        $this->assertStringContainsString('width: 90mm;', $html);
-        $this->assertStringContainsString('margin: 3mm 0 0 5mm;', $html);
-        $this->assertStringContainsString('height: 18mm;', $html);
-        $this->assertStringContainsString('height: 15mm;', $html);
+        $this->assertStringContainsString('width: 93mm;', $html);
+        $this->assertStringContainsString('margin: 4mm 0 0;', $html);
+        $this->assertStringContainsString('top: 6mm;', $html);
+        $this->assertStringContainsString('height: 24mm;', $html);
         $this->assertStringContainsString('width: 100%;', $html);
         $this->assertStringNotContainsString('.barcode-title', $html);
         $this->assertStringNotContainsString('Company.', $html);
@@ -262,10 +271,28 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('WAF NO.', $html);
         $this->assertStringContainsString('QTY.', $html);
         $this->assertStringNotContainsString('CODE.', $html);
+        $this->assertStringContainsString('class="pdf-qr"', $html);
+        $this->assertStringContainsString('alt="QR code katalog PATRIA"', $html);
+        $this->assertStringNotContainsString('Supplier barcode', $html);
         $this->assertStringNotContainsString('customerBarcode', $html);
         $this->assertStringNotContainsString('CAT-TEST', $html);
         $this->assertStringNotContainsString('.sticker-din', $html);
         $this->assertStringNotContainsString('.sticker-addresses', $html);
+    }
+
+    public function test_catalog_qr_uses_a_public_patria_catalog_pdf(): void
+    {
+        $catalogUrl = route('catalogs.patria');
+        $qrDataUri = app(BarcodeService::class)->qrDataUri($catalogUrl);
+
+        $this->get($catalogUrl)
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+        $this->assertStringStartsWith('data:image/png;base64,', $qrDataUri);
+        $this->assertStringStartsWith(
+            "\x89PNG\r\n\x1a\n",
+            base64_decode(substr($qrDataUri, strlen('data:image/png;base64,')), true),
+        );
     }
 
     public function test_label_uses_the_whatsapp_logo_asset(): void

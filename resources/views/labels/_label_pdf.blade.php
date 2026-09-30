@@ -1,4 +1,4 @@
-<div class="sticker-page">
+<div class="sticker-page {{ ($isResult ?? false) ? 'is-result-label' : '' }}">
     <div class="sticker-body">
         <div class="sticker-panel">
             <table class="sticker-header" role="presentation">
@@ -21,7 +21,7 @@
             </table>
 
             <table class="sticker-fields sticker-fields-top" role="presentation">
-                <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
+                <colgroup><col style="width:55.5%"><col style="width:44.5%"></colgroup>
                 <tr class="field-titles">
                     <td>CUST NO.</td>
                     <td>P.O NO.</td>
@@ -33,7 +33,7 @@
             </table>
 
             <table class="sticker-fields sticker-fields-bottom" role="presentation">
-                <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
+                <colgroup><col style="width:55.5%"><col style="width:44.5%"></colgroup>
                 <tr class="field-titles">
                     <td>WAF NO.</td>
                     <td>QTY.</td>
@@ -43,25 +43,25 @@
                     <td>{{ $label->quantity ? number_format($label->quantity, 0, ',', '.').' '.$label->uom : '' }}</td>
                 </tr>
             </table>
-        </div>
 
-        <table class="sticker-barcodes" role="presentation">
-            <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
-            <tr>
-                <td>
-                    <div class="barcode-standard">
-                        <span>MANUFACTURED TO WAF</span>
-                        <span>SPECIFICATIONS , A INDONESIA</span>
-                        <span>REGISTERED TRADEMARK</span>
-                        <span>ISO 9001 2015 CERTIFIED</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="sticker-barcode-canvas">
-                        <img class="pdf-barcode" src="{{ $catalogBarcodeDataUri }}" alt="Supplier barcode">
-                    </div>
-                </td>
-            </tr>
-        </table>
+            <table class="sticker-barcodes" role="presentation">
+                <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
+                <tr>
+                    <td>
+                        <div class="barcode-standard">
+                            <span>MANUFACTURED TO WAF</span>
+                            <span>SPECIFICATIONS , A INDONESIA</span>
+                            <span>REGISTERED TRADEMARK</span>
+                            <span>ISO 9001 2015 CERTIFIED</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sticker-barcode-canvas">
+                            <img class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog PATRIA">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
