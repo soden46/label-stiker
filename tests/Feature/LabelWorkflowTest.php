@@ -252,7 +252,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertSame(2, substr_count($html, '<col style="width:55.5%"><col style="width:44.5%">'));
         $this->assertSame(1, substr_count($html, '<col style="width:60%"><col style="width:40%">'));
         $this->assertStringContainsString('height: 11.5mm', $html);
-        $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 18pt;'));
+        $this->assertGreaterThanOrEqual(2, substr_count($html, 'font-size: 15pt;'));
         $this->assertStringContainsString('white-space: nowrap;', $html);
         $this->assertStringContainsString('clear: both;', $html);
         $this->assertStringContainsString('margin-top: 2mm;', $html);
