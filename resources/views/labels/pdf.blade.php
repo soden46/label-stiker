@@ -174,7 +174,7 @@ html, body {
     padding: 1mm 0.5mm;
     background: #fff;
     border: 0;
-    font-size: 18pt;
+    font-size: 15pt;
     line-height: 1.05;
     font-weight: 700;
     white-space: nowrap;
@@ -183,7 +183,7 @@ html, body {
 }
 
 .field-values td.value-po {
-    font-size: 18pt;
+    font-size: 15pt;
 }
 
 .sticker-fields-bottom {
