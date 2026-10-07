@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class RbacSeeder extends Seeder
 {
@@ -94,16 +92,5 @@ class RbacSeeder extends Seeder
         $manager->permissions()->sync($permissions->only([
             'dashboard.view', 'inventory.view', 'purchasing.view', 'manufacturing.view', 'reports.view',
         ])->pluck('id'));
-
-        User::where('email', 'admin@labelin.test')->update([
-            'role_id' => $superAdmin->id, 'role' => 'super_admin', 'portal' => 'backoffice', 'is_active' => true,
-        ]);
-        User::updateOrCreate(
-            ['email' => 'kasir@labelin.test'],
-            [
-                'name' => 'Kasir Demo', 'password' => Hash::make('password'), 'role' => 'cashier',
-                'role_id' => $cashier->id, 'portal' => 'pos', 'is_active' => true, 'email_verified_at' => now(),
-            ],
-        );
     }
 }
