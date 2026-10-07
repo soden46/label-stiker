@@ -5,7 +5,7 @@
 @section('heading', 'Buat label barcode')
 
 @section('content')
-<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}">
+<div class="builder-layout" data-label-builder data-products="{{ $products->toJson() }}" data-catalog-qrs="{{ $catalogQrs->toJson() }}">
     <form method="POST" action="{{ route('labels.store') }}" enctype="multipart/form-data" class="builder-form">
         @csrf
         <div class="builder-intro">
@@ -31,6 +31,7 @@
                 <div><small>PART TERPILIH</small><strong id="selectedName"></strong><span id="selectedMeta"></span></div>
                 <span class="selected-check">✓</span>
             </div>
+            <p class="input-hint" id="selectedCatalog" hidden><span id="selectedCategory"></span> · <a id="selectedCatalogLink" target="_blank" rel="noopener noreferrer">Buka katalog</a></p>
         </section>
 
         <section class="form-step">
@@ -87,7 +88,7 @@
                                 <colgroup><col style="width:60%"><col style="width:40%"></colgroup>
                                 <tr>
                                     <td><div class="barcode-standard"><span>MANUFACTURED TO WAF</span><span>SPECIFICATIONS , A INDONESIA</span><span>REGISTERED TRADEMARK</span><span>ISO 9001 2015 CERTIFIED</span></div></td>
-                                    <td><div class="sticker-barcode-canvas"><img class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog PATRIA"></div></td>
+                                    <td><div class="sticker-barcode-canvas"><img id="previewCatalogQr" class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog produk"></div></td>
                                 </tr>
                             </table>
                         </div>

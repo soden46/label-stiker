@@ -62,7 +62,7 @@ class LabelWorkflowTest extends TestCase
             ->assertSee('WAF NO.')
             ->assertSee('QTY.')
             ->assertDontSee('Company.')
-            ->assertDontSee('Catalog')
+            ->assertDontSee('>Catalog<', false)
             ->assertSee('MANUFACTURED TO WAF')
             ->assertSee('ISO 9001 2015 CERTIFIED')
             ->assertDontSee('DELIVERY ORDER OPSIONAL')
@@ -272,7 +272,7 @@ class LabelWorkflowTest extends TestCase
         $this->assertStringContainsString('QTY.', $html);
         $this->assertStringNotContainsString('CODE.', $html);
         $this->assertStringContainsString('class="pdf-qr"', $html);
-        $this->assertStringContainsString('alt="QR code katalog PATRIA"', $html);
+        $this->assertStringContainsString('alt="QR code katalog produk"', $html);
         $this->assertStringNotContainsString('Supplier barcode', $html);
         $this->assertStringNotContainsString('customerBarcode', $html);
         $this->assertStringNotContainsString('CAT-TEST', $html);

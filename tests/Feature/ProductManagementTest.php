@@ -101,6 +101,9 @@ class ProductManagementTest extends TestCase
         $this->actingAs($user)->post(route('labels.store'), [
             'product_id' => $product->id,
             'purchase_order_no' => 'PO-HISTORY-001',
+            'delivery_note_no' => 'SJ-HISTORY-001',
+            'sender_address' => 'PT WAF, Bekasi',
+            'recipient_address' => 'Customer, Jakarta',
             'customer_part_no' => 'CUST-HISTORY-001',
             'quantity' => 10,
             'uom' => 'SET',
@@ -127,6 +130,7 @@ class ProductManagementTest extends TestCase
 
         $this->actingAs($user)->post(route('labels.store'), [
             'product_id' => $product->id, 'purchase_order_no' => 'PO-LOGO-1',
+            'delivery_note_no' => 'SJ-LOGO-1', 'sender_address' => 'PT WAF, Bekasi', 'recipient_address' => 'Customer, Jakarta',
             'customer_part_no' => 'CUST-LOGO-1', 'quantity' => 10, 'uom' => 'PCS',
         ])->assertRedirect();
         $label = LabelPrint::latest('id')->firstOrFail();
@@ -135,6 +139,7 @@ class ProductManagementTest extends TestCase
 
         $this->actingAs($user)->post(route('labels.store'), [
             'product_id' => $product->id, 'purchase_order_no' => 'PO-LOGO-2',
+            'delivery_note_no' => 'SJ-LOGO-2', 'sender_address' => 'PT WAF, Bekasi', 'recipient_address' => 'Customer, Jakarta',
             'customer_part_no' => 'CUST-LOGO-2', 'quantity' => 10, 'uom' => 'PCS',
             'logo' => UploadedFile::fake()->image('override-logo.png', 600, 450),
         ])->assertRedirect();

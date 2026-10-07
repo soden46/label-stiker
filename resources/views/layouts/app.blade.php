@@ -24,6 +24,7 @@
             @if(auth()->user()->canAccess('labels.view'))<a href="{{ route('labels.index') }}" class="nav-item {{ request()->routeIs('labels.index') ? 'active' : '' }}"><span class="nav-icon">&#9638;</span> Bulk print</a>@endif
             @if(auth()->user()->canAccess('delivery_orders.view'))<a href="{{ route('delivery-orders.index') }}" class="nav-item {{ request()->routeIs('delivery-orders.*') ? 'active' : '' }}"><span class="nav-icon">&#9636;</span> Delivery order</a>@endif
             @if(auth()->user()->canAccess('products.view'))<a href="{{ route('products.index') }}" class="nav-item {{ request()->routeIs('products.*') ? 'active' : '' }}"><span class="nav-icon">&#9671;</span> Master part</a>@endif
+            @if(auth()->user()->canAccess('products.view'))<a href="{{ route('product-categories.index') }}" class="nav-item {{ request()->routeIs('product-categories.*') ? 'active' : '' }}"><span class="nav-icon">&#9639;</span> Kategori produk</a>@endif
             @if(auth()->user()->canAccess('inventory.manage'))<a href="{{ route('warehouses.index') }}" class="nav-item {{ request()->routeIs('warehouses.*') ? 'active' : '' }}"><span class="nav-icon">&#9637;</span> Master gudang</a>@endif
             @if(auth()->user()->canAccess('branding.manage'))<a href="{{ route('settings.edit') }}" class="nav-item {{ request()->routeIs('settings.*') ? 'active' : '' }}"><span class="nav-icon">&#9881;</span> Pengaturan</a>@endif
 

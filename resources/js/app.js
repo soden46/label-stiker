@@ -4,9 +4,25 @@ const menuButton = document.querySelector('#menuButton');
 const sidebar = document.querySelector('#sidebar');
 menuButton?.addEventListener('click', () => sidebar?.classList.toggle('open'));
 
+document.querySelectorAll('[data-catalog-input]').forEach(container => {
+    const type = container.querySelector('[data-catalog-type]');
+    const update = () => {
+        const pdf = type.value === 'pdf';
+        container.querySelector('[data-catalog-pdf]').hidden = !pdf;
+        container.querySelector('[data-catalog-url]').hidden = pdf;
+        container.querySelector('[name="catalog_file"]').disabled = !pdf;
+        const url = container.querySelector('[name="catalog_url"]');
+        url.disabled = pdf;
+        url.required = !pdf;
+    };
+    type.addEventListener('change', update);
+    update();
+});
+
 const builder = document.querySelector('[data-label-builder]');
 if (builder) {
     const products = JSON.parse(builder.dataset.products || '[]');
+    const catalogQrs = JSON.parse(builder.dataset.catalogQrs || '{}');
     const search = document.querySelector('#productSearch');
     const results = document.querySelector('#productResults');
     const productId = document.querySelector('#productId');
@@ -46,6 +62,10 @@ if (builder) {
         document.querySelector('#previewDesc').textContent = product.description || emptyText;
         document.querySelector('#previewCustomer').textContent = customerPartNo || emptyText;
         document.querySelector('#previewSku').textContent = product.sku;
+        document.querySelector('#previewCatalogQr').src = catalogQrs[product.catalog_url];
+        document.querySelector('#selectedCategory').textContent = product.category_name || 'Belum dikategorikan (PATRIA)';
+        document.querySelector('#selectedCatalogLink').href = product.catalog_url;
+        document.querySelector('#selectedCatalog').hidden = false;
         updatePreviewQty();
         emptyPreview.hidden = true;
         preview.hidden = false;
@@ -58,7 +78,7 @@ if (builder) {
         const button = event.target.closest('[data-id]');
         if (button) choose(products.find(product => String(product.id) === button.dataset.id));
     });
-    clear.addEventListener('click', () => { search.value=''; productId.value=''; selected.hidden=true; clear.style.display='none'; preview.hidden=true; emptyPreview.hidden=false; generate.disabled=true; search.focus(); renderResults(''); });
+    clear.addEventListener('click', () => { search.value=''; productId.value=''; selected.hidden=true; document.querySelector('#selectedCatalog').hidden=true; clear.style.display='none'; preview.hidden=true; emptyPreview.hidden=false; generate.disabled=true; search.focus(); renderResults(''); });
     document.addEventListener('click', event => { if (!event.target.closest('.product-picker')) results.classList.remove('open'); });
     document.querySelector('#customerPart').addEventListener('input', event => document.querySelector('#previewCustomer').textContent = event.target.value || emptyText);
     document.querySelector('#purchaseOrder').addEventListener('input', event => document.querySelector('#previewPo').textContent = event.target.value || emptyText);

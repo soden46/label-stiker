@@ -3,9 +3,16 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Throwable;
 
 class ProductImportService
@@ -18,6 +25,7 @@ class ProductImportService
         'supplier_code' => ['CODE', 'SUPPLIER CODE', 'KODE SUPPLIER'],
         'barcode_value' => ['BARCODE', 'BARCODE VALUE', 'BARCODE NUMBER', 'KODE BARCODE'],
         'uom' => ['UOM', 'UNIT', 'SATUAN'],
+        'category' => ['KATEGORI PRODUK', 'KATEGORI', 'CATEGORY', 'PRODUCT CATEGORY'],
     ];
 
     public function import(UploadedFile|string $file): array
@@ -78,11 +86,24 @@ class ProductImportService
                 }
 
                 try {
+                    $categoryData = [];
+                    if ($values['category']) {
+                        $category = ProductCategory::where('name', $values['category'])->first();
+                        if (! $category) {
+                            $result['skipped']++;
+                            $result['errors'][] = "Sheet {$sheet->getTitle()} baris {$rowNumber}: kategori {$values['category']} belum terdaftar. Buat kategori produk terlebih dahulu.";
+
+                            continue;
+                        }
+                        $categoryData['product_category_id'] = $category->id;
+                    }
+
                     if ($existing?->trashed()) {
                         $existing->restore();
                     }
 
                     Product::updateOrCreate(['sku' => $sku], [
+                        ...$categoryData,
                         'name' => $values['name'],
                         'description' => $values['description'],
                         'customer_part_no' => $values['customer_part_no'],
@@ -101,8 +122,52 @@ class ProductImportService
         }
 
         $result['errors'] = array_slice($result['errors'], 0, 10);
+        $spreadsheet->disconnectWorksheets();
 
         return $result;
+    }
+
+    public function writeTemplate(string $path): void
+    {
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Master Part');
+        $headers = ['SKU', 'DESCRIPTION', 'REMARKS', 'CUSTOMER PART', 'CODE', 'BARCODE', 'UOM', 'KATEGORI PRODUK'];
+        $sheet->fromArray($headers, null, 'A1');
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true)->getColor()->setARGB('FF111111');
+        $sheet->getStyle('A1:H1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC400');
+        $sheet->getStyle('A1:H1')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A2:H1001')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $sheet->getDefaultRowDimension()->setRowHeight(20);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+        foreach (['A' => 24, 'B' => 30, 'C' => 32, 'D' => 24, 'E' => 20, 'F' => 24, 'G' => 12, 'H' => 28, 'J' => 85] as $column => $width) {
+            $sheet->getColumnDimension($column)->setWidth($width);
+        }
+        $sheet->freezePane('A2');
+        $sheet->setAutoFilter('A1:H1001');
+        $instructions = [
+            'PETUNJUK IMPORT MASTER PART',
+            'Isi data mulai baris 2, kolom A sampai H. Jangan ubah header.',
+            'SKU dan DESCRIPTION (nama part) wajib diisi.',
+            'SKU yang sudah ada akan diperbarui. Simpan kode sebagai teks agar angka nol di depan tetap ada.',
+            'BARCODE kosong = SKU. UOM kosong = PCS.',
+            'KATEGORI PRODUK: isi nama kategori yang sudah dibuat di menu Kategori Produk.',
+            'Kategori kosong mempertahankan kategori part lama; part baru tanpa kategori memakai katalog PATRIA.',
+            'Kolom J berisi petunjuk dan daftar kategori, tidak diimport.',
+            'KATEGORI YANG TERSEDIA:',
+            ...ProductCategory::orderBy('name')->pluck('name')->all(),
+        ];
+        foreach ($instructions as $index => $instruction) {
+            $sheet->setCellValueExplicit('J'.($index + 1), $instruction, DataType::TYPE_STRING);
+        }
+        $sheet->getStyle('J1')->getFont()->setBold(true);
+        $sheet->getStyle('J1:J'.count($instructions))->getAlignment()->setWrapText(true);
+        $sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+            ->setPaperSize(PageSetup::PAPERSIZE_A4)->setFitToWidth(1)->setFitToHeight(0)
+            ->setRowsToRepeatAtTopByStartAndEnd(1, 1)->setPrintArea('A1:H30');
+        $sheet->getPageMargins()->setTop(0.3)->setBottom(0.3)->setLeft(0.3)->setRight(0.3);
+        (new Xlsx($spreadsheet))->save($path);
+        $spreadsheet->disconnectWorksheets();
     }
 
     private function findHeader(array $rows): array

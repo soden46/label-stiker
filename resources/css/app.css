@@ -1,6 +1,12 @@
 @import 'tailwindcss';
 @import './label-result-preview.css';
 
+.field select,.add-product-panel select,.category-form input,.category-form select{width:100%;min-height:46px;border:1px solid #d9d9cf;border-radius:10px;padding:10px 13px;background:#fff;font-size:12px;outline:none}
+.category-form label{display:block;margin:14px 0 7px;font-size:9px;font-weight:850;letter-spacing:.8px;text-transform:uppercase;color:#616258}
+[data-catalog-pdf][hidden],[data-catalog-url][hidden],#selectedCatalog[hidden]{display:none}
+#selectedCatalogLink{text-decoration:underline}
+@media(max-width:600px){.category-panel .panel-heading{align-items:stretch;flex-direction:column;gap:14px}.category-panel .table-search{width:100%}.category-panel .table-search input{min-width:0;flex:1;width:auto}}
+
 :root { --ink:#11120f; --muted:#737469; --line:#e7e6dc; --paper:#f5f5ef; --white:#fff; --yellow:#ffc400; --yellow-soft:#fff6cc; --green:#c8f0d5; --blue:#dcecff; --sidebar:#171814; --radius:18px; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }

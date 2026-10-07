@@ -16,7 +16,7 @@ class Product extends Model
         'sku', 'name', 'description', 'customer_part_no', 'supplier_code',
         'barcode_value', 'logo_path', 'uom', 'is_active',
         'unit_id', 'item_type', 'track_inventory', 'cost_method',
-        'standard_cost', 'selling_price', 'minimum_stock',
+        'standard_cost', 'selling_price', 'minimum_stock', 'product_category_id',
     ];
 
     protected function casts(): array
@@ -31,6 +31,16 @@ class Product extends Model
     public function labelPrints(): HasMany
     {
         return $this->hasMany(LabelPrint::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
+    public function catalogUrl(): string
+    {
+        return $this->category?->catalogUrl() ?? route('catalogs.patria');
     }
 
     public function unit(): BelongsTo

@@ -100,7 +100,7 @@
                     <div class="sticker-barcode-canvas">{!! $partBarcode !!}</div>
                 </td>
                 <td>
-                    <div class="sticker-barcode-canvas"><img class="catalog-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog PATRIA"></div>
+                    <div class="sticker-barcode-canvas"><img class="catalog-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog produk"></div>
                 </td>
             </tr>
         </table>

@@ -46,7 +46,8 @@ class LabelPrintController extends Controller
     public function create(BarcodeService $barcode): View
     {
         $products = Product::query()
-            ->select(['id', 'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom'])
+            ->select(['id', 'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom', 'product_category_id'])
+            ->with('category')
             ->where('is_active', true)
             ->withSum('stockBalances as inventory_stock', 'quantity')
             ->orderBy('name')
@@ -61,10 +62,16 @@ class LabelPrintController extends Controller
                 'barcode_value' => $product->barcode_value,
                 'uom' => $product->uom,
                 'inventory_stock' => (float) ($product->inventory_stock ?? 0),
+                'category_name' => $product->category?->name,
+                'catalog_url' => $product->catalogUrl(),
             ]);
+
+        $catalogQrs = $products->pluck('catalog_url')->push(route('catalogs.patria'))->unique()
+            ->mapWithKeys(fn ($url) => [$url => $barcode->qrDataUri($url)]);
 
         return view('labels.create', [
             'products' => $products,
+            'catalogQrs' => $catalogQrs,
             'catalogQrDataUri' => $barcode->qrDataUri(route('catalogs.patria')),
         ]);
     }
@@ -91,9 +98,13 @@ class LabelPrintController extends Controller
             'barcode_value' => $product->barcode_value,
             'inventory_stock' => $product->stockBalances()->sum('quantity'),
             'logo_path' => $logoPath,
-            'product_snapshot' => $product->only([
-                'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom',
-            ]),
+            'product_snapshot' => [
+                ...$product->only([
+                    'sku', 'name', 'description', 'customer_part_no', 'supplier_code', 'barcode_value', 'uom',
+                ]),
+                'category_name' => $product->category?->name,
+                'catalog_url' => $product->catalogUrl(),
+            ],
         ]);
 
         return redirect()->route('labels.show', $labelPrint)->with('success', 'Label berhasil dibuat dan siap dicetak.');
@@ -151,7 +162,7 @@ class LabelPrintController extends Controller
         return [
             'label' => $labelPrint,
             'partBarcode' => $barcode->html($labelPrint->barcode_value),
-            'catalogQrDataUri' => $barcode->qrDataUri(route('catalogs.patria')),
+            'catalogQrDataUri' => $barcode->qrDataUri($labelPrint->product_snapshot['catalog_url'] ?? route('catalogs.patria')),
             'logoDataUri' => $branding->dataUriForPath($labelPrint->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
                 ?: $branding->logoDataUri(),
@@ -166,7 +177,7 @@ class LabelPrintController extends Controller
         foreach ($labels as $label) {
             $label->loadMissing('product');
 
-            $catalogQrDataUri = $barcode->qrDataUri(route('catalogs.patria'));
+            $catalogQrDataUri = $barcode->qrDataUri($label->product_snapshot['catalog_url'] ?? route('catalogs.patria'));
             $logoDataUri = $branding->dataUriForPath($label->logo_path)
                 ?: $branding->publicLabelLogoDataUri()
                 ?: $branding->logoDataUri();

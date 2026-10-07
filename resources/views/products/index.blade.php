@@ -10,12 +10,14 @@
         <span class="import-icon">⇧</span>
         <div><p class="eyebrow">BULK MASTER DATA</p><h3>Import produk dari Excel</h3><p>Upload XLSX, XLS, atau CSV. Header boleh berada di baris mana saja dan akan dideteksi otomatis.</p></div>
     </div>
+    @if(auth()->user()->canAccess('products.import'))<a href="{{ route('products.import-template') }}" class="button button-ghost">Unduh template Excel</a>@endif
     <form method="POST" action="{{ route('products.import') }}" enctype="multipart/form-data" class="import-form">
         @csrf
         <label class="file-picker"><input type="file" name="product_file" accept=".xlsx,.xls,.csv" required><span>⌕ Pilih file Excel</span><small>maks. 10 MB</small></label>
         <button class="button button-primary">⇧ Import sekarang</button>
     </form>
 </section>
+<p class="input-hint">Isi kolom KATEGORI PRODUK dengan nama kategori yang sudah dibuat. SKU yang sudah ada akan diperbarui; kategori kosong mempertahankan kategori sebelumnya.</p>
 
 @if(session('import_result'))
     @php($import = session('import_result'))
@@ -38,16 +40,17 @@
         <div class="panel-heading"><div><p class="eyebrow">DATABASE PART</p><h3>{{ $products->total() }} part tersimpan</h3></div>
             <form class="table-search"><input type="search" name="search" value="{{ $search }}" placeholder="Cari SKU, nama, customer part..."><button>⌕</button></form>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Part</th><th>Customer part</th><th>Code</th><th>Barcode</th><th>UOM</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
-            @foreach($products as $product)<tr><td><strong>{{ $product->name }}</strong><small>{{ $product->sku }} · {{ $product->description }}</small></td><td class="mono">{{ $product->customer_part_no ?: '—' }}</td><td class="mono">{{ $product->supplier_code ?: '—' }}</td><td class="mono">{{ $product->barcode_value }}</td><td>{{ $product->uom }}</td><td><span class="status {{ $product->is_active ? 'done' : 'draft' }}">{{ $product->is_active ? 'Aktif' : 'Nonaktif' }}</span></td><td><div class="row-actions"><a href="{{ route('products.edit', $product) }}" class="action-button" title="Edit part">✎</a><form method="POST" action="{{ route('products.destroy', $product) }}" onsubmit="return confirm('Hapus {{ addslashes($product->name) }} dari master part? Histori label lama tetap disimpan.')">@csrf @method('DELETE')<button class="action-button danger" title="Hapus part">×</button></form></div></td></tr>@endforeach
+        <div class="table-wrap"><table><thead><tr><th>Part</th><th>Kategori</th><th>Customer part</th><th>Code</th><th>Barcode</th><th>UOM</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+            @foreach($products as $product)<tr><td><strong>{{ $product->name }}</strong><small>{{ $product->sku }} · {{ $product->description }}</small></td><td>{{ $product->category?->name ?: 'Belum dikategorikan' }}</td><td class="mono">{{ $product->customer_part_no ?: '—' }}</td><td class="mono">{{ $product->supplier_code ?: '—' }}</td><td class="mono">{{ $product->barcode_value }}</td><td>{{ $product->uom }}</td><td><span class="status {{ $product->is_active ? 'done' : 'draft' }}">{{ $product->is_active ? 'Aktif' : 'Nonaktif' }}</span></td><td><div class="row-actions"><a href="{{ route('products.edit', $product) }}" class="action-button" title="Edit part">✎</a><form method="POST" action="{{ route('products.destroy', $product) }}" onsubmit="return confirm('Hapus {{ addslashes($product->name) }} dari master part? Histori label lama tetap disimpan.')">@csrf @method('DELETE')<button class="action-button danger" title="Hapus part">×</button></form></div></td></tr>@endforeach
         </tbody></table></div>
         <div class="pagination">{{ $products->links() }}</div>
     </section>
     <aside class="panel add-product-panel">
-        <p class="eyebrow">TAMBAH CEPAT</p><h3>Part baru</h3><p>Masukkan data inti. Nanti bisa dikembangkan menjadi import Excel.</p>
+        <p class="eyebrow">TAMBAH CEPAT</p><h3>Part baru</h3><p>Masukkan data part dan pilih kategori untuk katalog QR label.</p>
         <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">@csrf
             <label>WAF part no. / SKU *</label><input name="sku" value="{{ old('sku') }}" placeholder="1000-P12-M8" required>
             <label>Nama part *</label><input name="name" value="{{ old('name') }}" placeholder="CON-STRAIGHT" required>
+            <label for="productCategory">Kategori produk</label><select id="productCategory" name="product_category_id"><option value="">Belum dikategorikan (katalog PATRIA)</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected((string) old('product_category_id') === (string) $category->id)>{{ $category->name }}</option>@endforeach</select>
             <label>Deskripsi</label><input name="description" value="{{ old('description') }}" placeholder="SIZE.3/8X1/4NPT">
             <div class="form-grid"><div><label>Customer part</label><input name="customer_part_no" value="{{ old('customer_part_no') }}"></div><div><label>Supplier code</label><input name="supplier_code" value="{{ old('supplier_code') }}"></div></div>
             <div class="form-grid"><div><label>Barcode <span class="optional-label">opsional</span></label><input name="barcode_value" value="{{ old('barcode_value') }}" placeholder="Kosong = gunakan SKU"><small class="input-hint">Isi hanya jika produk sudah punya kode barcode sendiri.</small></div><div><label>UOM *</label><input name="uom" value="{{ old('uom', 'PCS') }}" required></div></div>

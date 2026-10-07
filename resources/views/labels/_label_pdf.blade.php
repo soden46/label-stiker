@@ -57,7 +57,7 @@
                     </td>
                     <td>
                         <div class="sticker-barcode-canvas">
-                            <img class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog PATRIA">
+                            <img class="pdf-qr" src="{{ $catalogQrDataUri }}" alt="QR code katalog produk">
                         </div>
                     </td>
                 </tr>

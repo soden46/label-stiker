@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Services\LabelBrandingService;
 use App\Services\ProductImportService;
 use Illuminate\Http\RedirectResponse;
@@ -17,22 +18,27 @@ class ProductController extends Controller
     {
         $search = $request->string('search')->trim()->toString();
         $products = Product::query()
+            ->with('category')
             ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('sku', 'like', "%{$search}%")
                     ->orWhere('customer_part_no', 'like', "%{$search}%")
-                    ->orWhere('supplier_code', 'like', "%{$search}%");
+                    ->orWhere('supplier_code', 'like', "%{$search}%")
+                    ->orWhereHas('category', fn ($category) => $category->where('name', 'like', "%{$search}%"));
             }))
             ->latest()
             ->paginate(15)
             ->withQueryString();
 
-        return view('products.index', compact('products', 'search'));
+        $categories = ProductCategory::orderBy('name')->get();
+
+        return view('products.index', compact('products', 'search', 'categories'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
+            'product_category_id' => ['nullable', 'integer', 'exists:product_categories,id'],
             'sku' => ['required', 'string', 'max:100', 'unique:products,sku'],
             'name' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:200'],
@@ -63,12 +69,17 @@ class ProductController extends Controller
 
     public function edit(Product $product, LabelBrandingService $branding): View
     {
-        return view('products.edit', ['product' => $product, 'productLogoDataUri' => $branding->dataUriForPath($product->logo_path)]);
+        return view('products.edit', [
+            'product' => $product,
+            'categories' => ProductCategory::orderBy('name')->get(),
+            'productLogoDataUri' => $branding->dataUriForPath($product->logo_path),
+        ]);
     }
 
     public function update(Request $request, Product $product): RedirectResponse
     {
         $data = $request->validate([
+            'product_category_id' => ['nullable', 'integer', 'exists:product_categories,id'],
             'sku' => ['required', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($product)],
             'name' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:200'],
@@ -128,5 +139,14 @@ class ProductController extends Controller
         $result = $importer->import($request->file('product_file'));
 
         return back()->with('import_result', $result);
+    }
+
+    public function importTemplate(ProductImportService $importer)
+    {
+        return response()->streamDownload(function () use ($importer) {
+            $importer->writeTemplate('php://output');
+        }, 'template-import-master-part.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }

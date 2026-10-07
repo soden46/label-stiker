@@ -7,6 +7,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\LabelPrintController;
 use App\Http\Controllers\LabelSettingController;
 use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetPasswordController;
@@ -21,6 +22,8 @@ Route::get('/catalog/patria-air-brake-system-parts', fn () => response()->file(
     public_path('catalogs/patria-air-brake-system-parts.pdf'),
     ['Content-Type' => 'application/pdf'],
 ))->name('catalogs.patria');
+Route::get('/catalog/products/{filename}', [ProductCategoryController::class, 'catalog'])
+    ->where('filename', '[A-Za-z0-9]{40}\\.pdf')->name('catalogs.products');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -69,11 +72,14 @@ Route::middleware(['auth', 'portal:backoffice'])->group(function () {
     Route::get('/stock-keluar', [StockController::class, 'createOut'])->middleware('permission:inventory.stock_out')->name('stock.out.create');
     Route::post('/stock-keluar', [StockController::class, 'storeOut'])->middleware('permission:inventory.stock_out')->name('stock.out.store');
     Route::get('/products', [ProductController::class, 'index'])->middleware('permission:products.view')->name('products.index');
+    Route::get('/products/import-template', [ProductController::class, 'importTemplate'])->middleware('permission:products.import')->name('products.import-template');
     Route::post('/products', [ProductController::class, 'store'])->middleware('permission:products.manage')->name('products.store');
     Route::post('/products/import', [ProductController::class, 'import'])->middleware('permission:products.import')->name('products.import');
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->middleware('permission:products.manage')->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('permission:products.manage')->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('permission:products.manage')->name('products.destroy');
+    Route::get('/product-categories', [ProductCategoryController::class, 'index'])->middleware('permission:products.view')->name('product-categories.index');
+    Route::resource('product-categories', ProductCategoryController::class)->only(['store', 'edit', 'update', 'destroy'])->middleware('permission:products.manage');
     Route::resource('warehouses', WarehouseController::class)->except(['create', 'show'])->middleware('permission:inventory.manage');
     Route::get('/settings', [LabelSettingController::class, 'edit'])->middleware('permission:branding.manage')->name('settings.edit');
     Route::put('/settings', [LabelSettingController::class, 'update'])->middleware('permission:branding.manage')->name('settings.update');

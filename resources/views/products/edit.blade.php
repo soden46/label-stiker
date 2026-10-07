@@ -24,6 +24,7 @@
                 <div class="field"><label>Nama part <b>*</b></label><input name="name" value="{{ old('name', $product->name) }}" required></div>
             </div>
             <div class="field"><label>Deskripsi</label><input name="description" value="{{ old('description', $product->description) }}"></div>
+            <div class="field"><label for="productCategory">Kategori produk</label><select id="productCategory" name="product_category_id"><option value="">Belum dikategorikan (katalog PATRIA)</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected((string) old('product_category_id', $product->product_category_id) === (string) $category->id)>{{ $category->name }}</option>@endforeach</select><small class="input-hint">QR label otomatis memakai katalog kategori ini.</small></div>
             <div class="form-grid">
                 <div class="field"><label>Customer part</label><input name="customer_part_no" value="{{ old('customer_part_no', $product->customer_part_no) }}"></div>
                 <div class="field"><label>Supplier code</label><input name="supplier_code" value="{{ old('supplier_code', $product->supplier_code) }}"></div>

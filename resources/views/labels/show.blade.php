@@ -14,12 +14,14 @@
         <span class="success-orb">✓</span>
         <p class="eyebrow">GENERATE BERHASIL</p>
         <h2>Label siap meluncur.</h2>
-        <p>Periksa sekali lagi datanya. PDF memakai halaman tetap 100 × 100 mm, barcode Code 128, dan QR katalog PATRIA.</p>
+        <p>Periksa sekali lagi datanya. PDF memakai halaman tetap 100 × 100 mm, barcode Code 128, dan QR katalog kategori produk.</p>
         <div class="printer-profile"><strong>Zebra GC420t</strong><span>203 dpi · Thermal monochrome · 100 × 100 mm</span></div>
         <dl>
             <div><dt>Nomor PO</dt><dd>{{ $label->purchase_order_no }}</dd></div>
             <div><dt>Surat jalan</dt><dd>{{ $label->delivery_note_no ?: '-' }}</dd></div>
             <div><dt>Part</dt><dd>{{ $label->product_snapshot['sku'] }}</dd></div>
+            <div><dt>Kategori</dt><dd>{{ $label->product_snapshot['category_name'] ?? 'Belum dikategorikan (PATRIA)' }}</dd></div>
+            <div><dt>Katalog</dt><dd><a href="{{ $label->product_snapshot['catalog_url'] ?? route('catalogs.patria') }}" target="_blank" rel="noopener noreferrer">Buka katalog</a></dd></div>
             <div><dt>Stock inventory</dt><dd>{{ rtrim(rtrim(number_format((float) $label->inventory_stock, 4, ',', '.'), '0'), ',') }} {{ $label->uom }}</dd></div>
             <div><dt>Dibuat</dt><dd>{{ $label->created_at->translatedFormat('d M Y, H:i') }}</dd></div>
             <div><dt>Status</dt><dd><span class="status {{ $label->printed_at ? 'done' : 'draft' }}">{{ $label->printed_at ? 'Sudah dicetak' : 'Siap cetak' }}</span></dd></div>
