@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './label-result-preview.css';
+@import './delivery-order-builder.css';
 
 .field select,.add-product-panel select,.category-form input,.category-form select{width:100%;min-height:46px;border:1px solid #d9d9cf;border-radius:10px;padding:10px 13px;background:#fff;font-size:12px;outline:none}
 .category-form label{display:block;margin:14px 0 7px;font-size:9px;font-weight:850;letter-spacing:.8px;text-transform:uppercase;color:#616258}

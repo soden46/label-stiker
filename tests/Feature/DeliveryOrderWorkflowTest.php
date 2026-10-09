@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Models\AppSetting;
 use App\Models\BusinessPartner;
 use App\Models\DeliveryOrder;
+use App\Models\Permission;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -116,6 +118,59 @@ class DeliveryOrderWorkflowTest extends TestCase
             $this->assertStringContainsString('color:#050505', $html);
             $this->assertStringNotContainsString('background:#050505;color:#fff;border:0.3mm solid #111', $html);
         }
+    }
+
+    public function test_save_and_open_pdf_creates_only_one_order_and_edit_keeps_its_number(): void
+    {
+        $user = User::factory()->create();
+        [$to, $shipTo] = $this->customers();
+        $product = $this->product('EDIT-001', 'CAT-EDIT');
+        $payload = $this->payload($to, $shipTo, $product, ['action' => 'print']);
+        $payload['items'] = [4 => ['product_id' => $product->id, 'quantity' => 7.5, 'unit' => 'BOX', 'weight' => 0]];
+
+        $response = $this->actingAs($user)->post(route('delivery-orders.store'), $payload);
+        $order = DeliveryOrder::with('items')->firstOrFail();
+        $response->assertSessionHasNoErrors()->assertRedirect(route('delivery-orders.pdf', $order));
+        $number = $order->number;
+        $uuid = $order->uuid;
+        $this->assertSame(1, $order->items->first()->line_number);
+        $this->assertSame('BOX', $order->items->first()->unit);
+
+        $this->get(route('delivery-orders.edit', $order))->assertOk()
+            ->assertViewHas('deliveryOrder', fn ($editing) => $editing->items->first()->unit === 'BOX');
+
+        $payload['purchase_order_no'] = 'PO-REVISED';
+        $payload['items'][4]['quantity'] = 25;
+        $this->put(route('delivery-orders.update', $order), $payload)
+            ->assertSessionHasNoErrors()->assertRedirect(route('delivery-orders.pdf', $order));
+        $order->refresh();
+        $this->assertSame($number, $order->number);
+        $this->assertSame($uuid, $order->uuid);
+        $this->assertSame('PO-REVISED', $order->purchase_order_no);
+        $this->assertSame('25.0000', $order->items->first()->quantity);
+        $this->assertSame('BOX', $order->items->first()->unit);
+        $this->assertDatabaseCount('delivery_orders', 1);
+        $this->assertDatabaseCount('delivery_order_items', 1);
+        $this->get(route('delivery-orders.pdf', $order))->assertOk()->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_user_without_print_permission_can_save_but_cannot_use_save_and_open_pdf(): void
+    {
+        $permission = Permission::create(['name' => 'Buat DO', 'slug' => 'delivery_orders.create', 'module' => 'Delivery Order', 'portal' => 'backoffice']);
+        $role = Role::create(['name' => 'DO Creator', 'slug' => 'do-creator', 'portal' => 'backoffice']);
+        $role->permissions()->attach($permission);
+        $user = User::factory()->create(['role' => 'staff', 'role_id' => $role->id]);
+        [$to, $shipTo] = $this->customers();
+        $product = $this->product('NO-PRINT', 'CAT-PRINT');
+        $payload = $this->payload($to, $shipTo, $product);
+
+        $this->actingAs($user)->get(route('delivery-orders.create'))->assertOk()->assertDontSee('Simpan &amp; buka PDF', false);
+        $this->post(route('delivery-orders.store'), [...$payload, 'action' => 'print'])->assertForbidden();
+        $this->assertDatabaseCount('delivery_orders', 0);
+        $this->post(route('delivery-orders.store'), $payload)->assertSessionHasNoErrors()->assertRedirect();
+        $order = DeliveryOrder::firstOrFail();
+        $this->put(route('delivery-orders.update', $order), [...$payload, 'action' => 'print', 'purchase_order_no' => 'UNAUTHORIZED'])->assertForbidden();
+        $this->assertSame($payload['purchase_order_no'], $order->fresh()->purchase_order_no);
     }
 
     /** @return array{0: BusinessPartner, 1: BusinessPartner} */

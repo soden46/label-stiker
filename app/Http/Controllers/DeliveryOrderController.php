@@ -48,6 +48,8 @@ class DeliveryOrderController extends Controller
 
     public function store(StoreDeliveryOrderRequest $request, NumberSequenceService $numbers): RedirectResponse
     {
+        abort_if($request->input('action') === 'print' && ! $request->user()->canAccess('delivery_orders.print'), 403);
+
         $deliveryOrder = DB::transaction(function () use ($request, $numbers) {
             $data = $request->validated();
             $partners = $this->customers($data['to_partner_id'], $data['ship_to_partner_id']);
@@ -67,7 +69,8 @@ class DeliveryOrderController extends Controller
             return $deliveryOrder;
         });
 
-        return redirect()->route('delivery-orders.show', $deliveryOrder)->with('success', 'Delivery Order berhasil dibuat.');
+        return redirect()->route($request->input('action') === 'print' ? 'delivery-orders.pdf' : 'delivery-orders.show', $deliveryOrder)
+            ->with('success', 'Delivery Order berhasil dibuat.');
     }
 
     public function show(DeliveryOrder $deliveryOrder): View
@@ -84,6 +87,8 @@ class DeliveryOrderController extends Controller
 
     public function update(StoreDeliveryOrderRequest $request, DeliveryOrder $deliveryOrder): RedirectResponse
     {
+        abort_if($request->input('action') === 'print' && ! $request->user()->canAccess('delivery_orders.print'), 403);
+
         DB::transaction(function () use ($request, $deliveryOrder) {
             $data = $request->validated();
             $partners = $this->customers($data['to_partner_id'], $data['ship_to_partner_id']);
@@ -98,7 +103,8 @@ class DeliveryOrderController extends Controller
             $this->syncItems($deliveryOrder, $data['items']);
         });
 
-        return redirect()->route('delivery-orders.show', $deliveryOrder)->with('success', 'Delivery Order berhasil diperbarui.');
+        return redirect()->route($request->input('action') === 'print' ? 'delivery-orders.pdf' : 'delivery-orders.show', $deliveryOrder)
+            ->with('success', 'Delivery Order berhasil diperbarui.');
     }
 
     public function storeCustomer(Request $request): JsonResponse
@@ -207,7 +213,7 @@ class DeliveryOrderController extends Controller
             ->get()
             ->keyBy('id');
 
-        foreach ($items as $index => $item) {
+        foreach (array_values($items) as $index => $item) {
             /** @var Product $product */
             $product = $products->get((int) $item['product_id']);
             abort_unless($product, 422, 'Produk tidak aktif atau tidak ditemukan.');

@@ -210,33 +210,100 @@ if (deliveryOrderForm) {
     const template = document.querySelector('#deliveryOrderItemTemplate');
     let index = 0;
 
-    const populateProductDetails = row => {
+    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
+    const updatePreview = () => {
+        const values = {
+            to: document.querySelector('#toPartner').selectedOptions[0]?.textContent,
+            ship: document.querySelector('#shipToPartner').selectedOptions[0]?.textContent,
+            address: document.querySelector('#shipToAddress').value,
+            date: document.querySelector('#deliveryDate').value,
+            po: document.querySelector('#purchaseOrderNo').value,
+        };
+        if (!document.querySelector('#toPartner').value) values.to = '-';
+        if (!document.querySelector('#shipToPartner').value) values.ship = '-';
+        Object.entries(values).forEach(([key, value]) => {
+            document.querySelector(`[data-do-preview="${key}"]`).textContent = value || '-';
+        });
+        const items = [...rows.querySelectorAll('[data-delivery-item]')];
+        document.querySelector('#addDeliveryOrderItem').disabled = items.length >= 100;
+        document.querySelector('#deliveryOrderPreviewItems').innerHTML = items.map((row, position) => {
+            row.querySelector('[data-item-heading]').textContent = `Part ${position + 1}`;
+            row.querySelector('[data-remove-item]').disabled = items.length === 1;
+            const product = products.find(item => String(item.id) === row.querySelector('[data-product]').value);
+            return `<li><strong>${escapeHtml(product?.item_name || 'Pilih part')}</strong><span>${escapeHtml(row.querySelector('input[name$="[quantity]"]').value || '-')} ${escapeHtml(row.querySelector('[data-unit]').value)}</span></li>`;
+        }).join('');
+    };
+    const renderProducts = row => {
+        const query = row.querySelector('[data-product]').value ? '' : row.querySelector('[data-product-search]').value.trim().toLowerCase();
+        const matches = products.filter(product => [product.name, product.waf_part_no, product.customer_part_no, product.catalog_code].some(value => String(value || '').toLowerCase().includes(query))).slice(0, 8);
+        const results = row.querySelector('[data-product-results]');
+        results.innerHTML = matches.length ? matches.map(product => `<button type="button" class="product-result" data-product-id="${product.id}"><span><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.waf_part_no)} · ${escapeHtml(product.customer_part_no || '-')}</small></span></button>`).join('') : '<div class="empty-state">Part tidak ditemukan.</div>';
+        results.classList.add('open');
+    };
+    const populateProductDetails = (row, resetUnit = true) => {
         const product = products.find(item => String(item.id) === row.querySelector('[data-product]').value);
         row.querySelector('[data-waf]').textContent = product?.waf_part_no || '-';
         row.querySelector('[data-customer-part]').textContent = product?.customer_part_no || '-';
         row.querySelector('[data-catalog]').textContent = product?.catalog_code || '-';
-        if (product) row.querySelector('[data-unit]').value = product.unit || '';
+        if (product && resetUnit) row.querySelector('[data-unit]').value = product.unit || '';
+        const search = row.querySelector('[data-product-search]');
+        if (product) search.value = `${product.name} - ${product.waf_part_no}`;
+        search.setCustomValidity(product ? '' : 'Pilih part dari hasil pencarian.');
     };
     const addItem = item => {
         const fragment = template.content.cloneNode(true);
-        const row = fragment.querySelector('tr');
+        const row = fragment.querySelector('[data-delivery-item]');
         row.innerHTML = row.innerHTML.replaceAll('__INDEX__', index++);
         rows.append(row);
         row.querySelector('[data-product]').value = item?.product_id || '';
-        row.querySelector('input[name$="[quantity]"]').value = item?.quantity || '';
-        row.querySelector('[data-unit]').value = item?.unit || '';
-        row.querySelector('input[name$="[weight]"]').value = item?.weight || '';
-        populateProductDetails(row);
+        row.querySelector('input[name$="[quantity]"]').value = item?.quantity ?? '';
+        row.querySelector('[data-unit]').value = item?.unit ?? '';
+        row.querySelector('input[name$="[weight]"]').value = item?.weight ?? '';
+        populateProductDetails(row, !item || item.unit === undefined);
+        updatePreview();
     };
     initialItems.forEach(addItem);
     document.querySelector('#addDeliveryOrderItem')?.addEventListener('click', () => addItem());
-    rows.addEventListener('change', event => {
-        if (event.target.matches('[data-product]')) populateProductDetails(event.target.closest('tr'));
+    rows.addEventListener('focusin', event => {
+        if (event.target.matches('[data-product-search]')) renderProducts(event.target.closest('[data-delivery-item]'));
+    });
+    rows.addEventListener('input', event => {
+        if (!event.target.matches('[data-product-search]')) return;
+        const row = event.target.closest('[data-delivery-item]');
+        row.querySelector('[data-product]').value = '';
+        populateProductDetails(row, false);
+        renderProducts(row);
     });
     rows.addEventListener('click', event => {
+        const productButton = event.target.closest('[data-product-id]');
+        if (productButton) {
+            const row = productButton.closest('[data-delivery-item]');
+            row.querySelector('[data-product]').value = productButton.dataset.productId;
+            populateProductDetails(row);
+            row.querySelector('[data-product-results]').classList.remove('open');
+            updatePreview();
+            return;
+        }
         const button = event.target.closest('[data-remove-item]');
         if (!button) return;
-        if (rows.querySelectorAll('tr').length > 1) button.closest('tr').remove();
+        if (rows.querySelectorAll('[data-delivery-item]').length > 1) button.closest('[data-delivery-item]').remove();
+        updatePreview();
+    });
+    rows.addEventListener('keydown', event => {
+        if (event.key === 'Escape') event.target.closest('[data-delivery-item]')?.querySelector('[data-product-results]').classList.remove('open');
+        if (event.key === 'ArrowDown' && event.target.matches('[data-product-search]')) {
+            event.preventDefault();
+            event.target.closest('[data-delivery-item]').querySelector('[data-product-id]')?.focus();
+        }
+        if (event.key === 'Enter' && event.target.matches('[data-product-search]')) {
+            event.preventDefault();
+            event.target.closest('[data-delivery-item]').querySelector('[data-product-id]')?.click();
+        }
+    });
+    document.addEventListener('click', event => {
+        document.querySelectorAll('.delivery-item .product-results.open').forEach(results => {
+            if (!results.closest('.product-picker').contains(event.target)) results.classList.remove('open');
+        });
     });
     const customerDialog = document.querySelector('#customerDialog');
     const customerForm = document.querySelector('#customerForm');
@@ -262,13 +329,32 @@ if (deliveryOrderForm) {
             event.target.dataset.lastValue = event.target.value;
             const option = event.target.selectedOptions[0];
             const address = document.querySelector(addressId);
-            if (address && option?.dataset.address) address.value = option.dataset.address;
+            if (address) address.value = option?.dataset.address || '';
             const phone = phoneId && document.querySelector(phoneId);
-            if (phone && option?.dataset.phone) phone.value = option.dataset.phone;
+            if (phone) phone.value = option?.dataset.phone || '';
         });
     };
     bindPartner('#toPartner', '#toAddress');
     bindPartner('#shipToPartner', '#shipToAddress', '#shipToPhone');
+    const sameCustomer = document.querySelector('#sameDeliveryCustomer');
+    const copyRecipient = () => {
+        document.querySelector('#shipToPartner').value = document.querySelector('#toPartner').value;
+        document.querySelector('#shipToPartner').dataset.lastValue = document.querySelector('#toPartner').value;
+        document.querySelector('#shipToAddress').value = document.querySelector('#toAddress').value;
+        document.querySelector('#shipToProject').value = document.querySelector('#toProject').value;
+        document.querySelector('#shipToPhone').value = document.querySelector('#toPartner').selectedOptions[0]?.dataset.phone || '';
+    };
+    sameCustomer.addEventListener('change', () => { if (sameCustomer.checked) copyRecipient(); updatePreview(); });
+    deliveryOrderForm.addEventListener('input', event => {
+        if (sameCustomer.checked && ['toAddress', 'toProject'].includes(event.target.id)) copyRecipient();
+        if (['shipToAddress', 'shipToProject', 'shipToPhone'].includes(event.target.id)) sameCustomer.checked = false;
+        updatePreview();
+    });
+    deliveryOrderForm.addEventListener('change', event => {
+        if (sameCustomer.checked && event.target.id === 'toPartner') copyRecipient();
+        if (event.target.id === 'shipToPartner') sameCustomer.checked = false;
+        updatePreview();
+    });
 
     document.querySelectorAll('[data-add-customer]').forEach(button => button.addEventListener('click', () => {
         openCustomerDialog(document.querySelector(button.dataset.customerTarget));
@@ -276,31 +362,42 @@ if (deliveryOrderForm) {
     document.querySelectorAll('#closeCustomerDialog, #cancelCustomerDialog').forEach(button => button.addEventListener('click', () => customerDialog.close()));
     customerForm?.addEventListener('submit', async event => {
         event.preventDefault();
-        const response = await fetch(customerForm.dataset.customerStoreUrl, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-            },
-            body: JSON.stringify(Object.fromEntries(new FormData(customerForm))),
-        });
-        const payload = await response.json();
-        if (!response.ok) {
-            customerError.textContent = Object.values(payload.errors || {}).flat().join(' ') || 'Customer tidak dapat disimpan.';
+        const submit = customerForm.querySelector('[type="submit"]');
+        if (submit.disabled) return;
+        submit.disabled = true;
+        customerError.hidden = true;
+        try {
+            const response = await fetch(customerForm.dataset.customerStoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                },
+                body: JSON.stringify(Object.fromEntries(new FormData(customerForm))),
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                customerError.textContent = Object.values(payload.errors || {}).flat().join(' ') || 'Customer tidak dapat disimpan.';
+                customerError.hidden = false;
+                return;
+            }
+            const customer = payload.customer;
+            document.querySelectorAll('#toPartner, #shipToPartner').forEach(select => {
+                const option = new Option(`${customer.code} — ${customer.name}`, customer.id, false, select === customerTarget);
+                option.dataset.address = customer.address || '';
+                option.dataset.phone = customer.phone || '';
+                select.add(option, select.querySelector('[value="__add_customer__"]'));
+            });
+            customerTarget.dataset.lastValue = String(customer.id);
+            customerTarget?.dispatchEvent(new Event('change'));
+            customerDialog.close();
+        } catch {
+            customerError.textContent = 'Customer belum dapat disimpan. Periksa koneksi lalu coba lagi.';
             customerError.hidden = false;
-            return;
+        } finally {
+            submit.disabled = false;
         }
-        const customer = payload.customer;
-        document.querySelectorAll('#toPartner, #shipToPartner').forEach(select => {
-            const option = new Option(`${customer.code} — ${customer.name}`, customer.id, false, select === customerTarget);
-            option.dataset.address = customer.address || '';
-            option.dataset.phone = customer.phone || '';
-            select.add(option);
-        });
-        customerTarget.dataset.lastValue = String(customer.id);
-        customerTarget?.dispatchEvent(new Event('change'));
-        customerDialog.close();
     });
 }
 

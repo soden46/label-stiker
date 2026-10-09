@@ -1,0 +1,24 @@
+.delivery-builder .builder-form{min-width:0}
+.delivery-builder .builder-actions{flex-wrap:wrap}
+.delivery-item-list{display:grid;gap:16px;margin-bottom:16px}
+.delivery-item{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fafaf6}
+.delivery-item-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:12px}
+.delivery-item-heading .text-button{margin:0;font-size:11px}
+.delivery-item-heading .text-button:disabled{opacity:.4;cursor:default}
+.delivery-item .product-result small{display:block;margin-top:4px}
+.delivery-part-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.delivery-part-details dt,.delivery-preview-details dt{font-size:9px;font-weight:800;color:var(--muted)}
+.delivery-part-details dd{margin:4px 0 0;font-size:11px;overflow-wrap:anywhere}
+.delivery-preview-number{margin:20px 0;padding:12px;border-radius:10px;background:var(--yellow-soft);font-size:13px;font-weight:800}
+.delivery-preview-details{margin:0}
+.delivery-preview-details>div{padding:10px 0;border-bottom:1px solid var(--line)}
+.delivery-preview-details dd{margin:5px 0 0;font-size:12px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+.delivery-preview-items{list-style:none;margin:18px 0;padding:0}
+.delivery-preview-items li{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);font-size:11px}
+.delivery-preview-items strong{overflow-wrap:anywhere;min-width:0}
+.delivery-preview-items span{flex-shrink:0}
+.delivery-options{margin-top:18px}
+.delivery-options summary{cursor:pointer;font-size:12px;font-weight:700}
+.delivery-options .form-grid{margin-top:16px}
+.delivery-builder #sameDeliveryCustomer{width:16px;height:16px;margin:0 7px 0 0;vertical-align:middle}
+@media(max-width:600px){.delivery-builder .form-step{padding:20px}.delivery-part-details{grid-template-columns:1fr}.delivery-builder .builder-actions{padding:20px}.delivery-builder .builder-actions .button{flex:1 1 auto}.delivery-preview{position:static}}
